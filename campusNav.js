@@ -28,6 +28,10 @@ var mymap = {};
 //vars for the layers of information on the map
 var markerLayer = {};
 var linesLayer = {};
+//var indoorLayer = {};
+
+//create a level controller for internal nav
+var levelControl = {};
 
 //function for initalising map based variables
 function makeMap(){
@@ -43,7 +47,36 @@ function makeMap(){
 	markerLayer = L.geoJson([],{
 			onEachFeature: function(feature,layer) {layer.bindPopup(feature.properties.id + "<br>" + feature.properties.Label + "<br>" + feature.properties.LinkedTo);}
 		}).addTo(mymap);
+		
 	linesLayer = L.geoJson().addTo(mymap);
+	
+	//get data for the indoorLayer
+	$.getJSON("testInternals.json", function(geoJSON) {
+		var indoorLayer = new L.Indoor(geoJSON, {
+			getLevel: function(feature) { 
+				if (feature.properties.length === 0)
+					return null;
+				return feature.properties.level;
+			},
+		});
+		
+		//set the current level to show
+		indoorLayer.setLevel("0");
+		mymap.addLayer(indoorLayer);
+		
+		levelControl = new L.Control.Level({
+			level: "0",
+			levels: indoorLayer.getLevels()
+		});
+		
+		// Connect the level control to the indoor layer
+		levelControl.addEventListener("levelchange", indoorLayer.setLevel, indoorLayer);
+		
+		//add the level control to the map
+		levelControl.addTo(mymap);
+	});
+	
+
 }
 
 //get the geojson data from the JSON file specified
@@ -204,3 +237,4 @@ function findOnewayLinks(){
 		console.log("No one way links found!");
 	}
 }
+
