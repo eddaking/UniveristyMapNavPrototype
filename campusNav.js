@@ -18,24 +18,33 @@ function convertStrArrToIntArr(strArr){
 	}
 	return intArr;
 }
-
-//create a new map, centre on soton, using soton maps tiles
-var mymap = L.map('map').setView([50.93564, -1.39614], 17);
-L.tileLayer(tileUrl, {
-	attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
-	maxZoom: 19
-}).addTo(mymap);
-
-//create layers to add data to
-//when creating the marker layer, add a function to it so that when any new feayres are added a popup is created with the specified html
-var markerLayer = L.geoJson([],{
-		onEachFeature: function(feature,layer) {layer.bindPopup(feature.properties.id + "<br>" + feature.properties.Label + "<br>" + feature.properties.LinkedTo);}
-	}).addTo(mymap);
-var linesLayer = L.geoJson().addTo(mymap);
-
 //vars for GeoJson data, ordered/not by id.
 var GJSONUnOrdered = [];
 var GJSONOrdered = [];
+
+//var for the leaflet map element
+var mymap = {};
+
+//vars for the layers of information on the map
+var markerLayer = {};
+var linesLayer = {};
+
+//function for initalising map based variables
+function makeMap(){
+	//create a new map, centre on soton, using soton maps tiles
+	mymap = L.map('map').setView([50.93564, -1.39614], 17);
+	L.tileLayer('http://tiles.maps.southampton.ac.uk/map/{z}/{x}/{y}.png', {
+		attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+		maxZoom: 19
+	}).addTo(mymap);
+	
+	//create layers to add data to
+	//when creating the marker layer, add a function to it so that when any new feayres are added a popup is created with the specified html
+	markerLayer = L.geoJson([],{
+			onEachFeature: function(feature,layer) {layer.bindPopup(feature.properties.id + "<br>" + feature.properties.Label + "<br>" + feature.properties.LinkedTo);}
+		}).addTo(mymap);
+	linesLayer = L.geoJson().addTo(mymap);
+}
 
 //get the geojson data from the JSON file specified
 function PopulateGJSONVars() {
@@ -43,7 +52,7 @@ function PopulateGJSONVars() {
 	$.ajax({
 		'async': false,
 		'global': false,
-		'url': JSONLoc,
+		'url': "/testNodes.json",
 		'dataType': "json",
 		'success': function (data) {
 			geojson = data;
@@ -195,5 +204,3 @@ function findOnewayLinks(){
 		console.log("No one way links found!");
 	}
 }
-
-window.onready = PopulateGJSONVars();

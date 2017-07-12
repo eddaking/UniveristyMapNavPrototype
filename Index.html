@@ -10,12 +10,13 @@
 	<link rel="stylesheet" type="text/css" href="leaflet/leaflet.css" />
 	<script type="text/javascript" src="/leaflet/leaflet.js"></script>
 	
-	<script type="text/javascript" src="/CONFIG.js"></script>
 	<script type="text/javascript" src="/campusNav.js"></script>
+	
 </head>
 
 <body>
 	<div class="center-block" id="map">
+		
 	</div>
 	<div>
 		<input id="drawAll" type="button" value="Draw All Routes" onclick="drawAllLines();" />
@@ -32,7 +33,9 @@
 		<input id="DrawRoute" type="button" value="Calc Route" onclick="calcRoute();" /><br>
 		<input id="drawAll" type="button" value="Find one way links" onclick="findOnewayLinks();" /><br>
 	</div>
-	<div id="textRoute"> </div>
+	<script> 
+		PopulateGJSONVars();
+		makeMap();
+	</script>	
 </body>
-
 </html>
