@@ -51,15 +51,8 @@ function makeMap(){
 	linesLayer = L.geoJson().addTo(mymap);
 	
 	//get data for the indoorLayer
-	$.getJSON("testInternals.json", function(geoJSON) {
-		var indoorLayer = new L.Indoor(geoJSON, {
-			getLevel: function(feature) { 
-				if (feature.properties.length === 0)
-					return null;
-				return feature.properties.level;
-			},
-		});
-		
+	$.getJSON("bldg32Internals.json", function(geoJSON) {
+		var indoorLayer = new L.Indoor(geoJSON);
 		//set the current level to show
 		indoorLayer.setLevel("0");
 		mymap.addLayer(indoorLayer);
@@ -149,10 +142,13 @@ function calcRoute(){
 	var endVal = parseInt($("#end")[0].value);
 	var routefound = false;
 	var priorityQ = []
-	priorityQ[0] = {'val': 0.0, 'node':GJSONOrdered[startVal], 'route':[startVal]}
+	var startNode = GJSONOrdered[startVal];
+	var endNode = GJSONOrdered[endVal]
+	priorityQ[0] = {'val': distBetweenCoords(startNode.geometry.coordinates, endNode.geometry.coordinates), 'distTravelled': 0.0, 'node':startNode, 'route':[startVal]}
 	//while there are nodes to be explored and the top item isnt a solution
+	console.log("new script");
 	while(priorityQ.length > 0 &&priorityQ[0].route.indexOf(endVal) == -1){
-		doOneNode(priorityQ);
+		doOneNode(priorityQ, endNode);
 	}
 	//if there are no items in the list, there is no path, sorry.
 	if(priorityQ.length == 0){
@@ -164,27 +160,34 @@ function calcRoute(){
 		priorityQ[0].route.forEach(function(point){
 			routeCoords.push(GJSONOrdered[point].geometry.coordinates);
 		});
+		console.log(nodesExplored);
 		//and draw the solution as a line
 		drawLine(routeCoords,linesLayer);
 	}
 	
 }
 
+var nodesExplored = 0;
+
 //method for calculating the nodes which can be navigated to from the top node in the index array.
 //removes top node from index and adds new nodes to it
-function doOneNode(index){
+function doOneNode(index, dest){
 	var currNode = index[0];
 	index.splice(0,1);
 	currNode.node.properties.LinkedTo.forEach(function(elem){
 		if(currNode.route.indexOf(elem) == -1){
+			nodesExplored = nodesExplored + 1;
 			//calc new index val, the 10000 is arbitrary to make the numbers not tiny.
 			var currNodeCoords = currNode.node.geometry.coordinates;
 			var destNodeCoords = GJSONOrdered[elem].geometry.coordinates;
-			var newDist = currNode.val + Math.sqrt(Math.pow(currNodeCoords[0] - destNodeCoords[0] ,2) + Math.pow(currNodeCoords[1] - destNodeCoords[1],2))*10000;
+			//calc the new dist travelled
+			var newDist = currNode.distTravelled + distBetweenCoords(currNodeCoords, destNodeCoords);
+			//calc the dist travelled + minimum dist to travel to destination
+			var newVal = newDist + distBetweenCoords(currNodeCoords, dest.geometry.coordinates);
 			//make new index object
 			var newRoute = currNode.route.slice();
 			newRoute.push(elem);
-			var newIndexObj = {'val':newDist, 'node':GJSONOrdered[elem], 'route': newRoute};
+			var newIndexObj = {'val': newVal, 'distTravelled': newDist, 'node':GJSONOrdered[elem], 'route': newRoute};
 			//find the first element of index which val is more than the val of the new object and insert the new object at that location
 			if(index.length != 0){
 				for(var i = 0; i < index.length; i++){
@@ -205,6 +208,10 @@ function doOneNode(index){
 			//would be a cycle, so we're not adding that node.
 		}
 	});
+}
+
+function distBetweenCoords(coord1, coord2){
+	return Math.sqrt(Math.pow(coord1[0] - coord2[0] ,2) + Math.pow(coord1[1] - coord2[1],2))*10000;
 }
 
 //TODO: make this more efficent, as this task is not very scaleable
@@ -237,4 +244,3 @@ function findOnewayLinks(){
 		console.log("No one way links found!");
 	}
 }
-
