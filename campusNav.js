@@ -1,10 +1,30 @@
 //function which draws a line between the specified array of points, on the specified layer
-function drawLine(points, layer){
-	layer.addData(
-		{
-			"type": "LineString",
-			"coordinates": points
-		});
+function drawLine(points, layer, opts){
+	points = genPointsForLinePoly(points);
+	var data = {
+		"features": [
+			{ "type": "Feature", 
+				"properties": { 'Level': -1,
+					"type": "Route" },
+				"geometry": { "type": "Polygon", 
+					"coordinates": [ points ]}
+			}
+		]
+	}
+
+	if (opts.hasOwnProperty("Level")){
+		data.features[0].properties.Level = opts.Level;
+	}
+	layer.addData(data);
+}
+
+function genPointsForLinePoly(points){
+	originalLen = points.length;
+	for (i = originalLen - 2; i > 0;i = i - 1){
+		points.push(points[i]);
+	}
+	
+	return points;
 }
 
 //convert an array of strings into an array of integers ["1"] -> [1]
@@ -21,6 +41,7 @@ function convertStrArrToIntArr(strArr){
 //vars for GeoJson data, ordered/not by id.
 var GJSONUnOrdered = [];
 var GJSONOrdered = [];
+var GJSONBuilding = [];
 
 //var for the leaflet map element
 var mymap = {};
@@ -28,10 +49,13 @@ var mymap = {};
 //vars for the layers of information on the map
 var markerLayer = {};
 var linesLayer = {};
-//var indoorLayer = {};
+var indoorLayer = {};
 
 //create a level controller for internal nav
 var levelControl = {};
+
+//intial contents of the indoorLayer
+var indoorInitConts = [];
 
 //function for initalising map based variables
 function makeMap(){
@@ -45,20 +69,67 @@ function makeMap(){
 	//create layers to add data to
 	//when creating the marker layer, add a function to it so that when any new feayres are added a popup is created with the specified html
 	markerLayer = L.geoJson([],{
-			onEachFeature: function(feature,layer) {layer.bindPopup(feature.properties.id + "<br>" + feature.properties.Label + "<br>" + feature.properties.LinkedTo);}
+			onEachFeature: function(feature,layer) {
+				layer.bindPopup(feature.properties.id + "<br>" + feature.properties.Label + "<br>" + feature.properties.LinkedTo);
+			}
 		}).addTo(mymap);
 		
-	linesLayer = L.geoJson().addTo(mymap);
-	
-	//get data for the indoorLayer
-	$.getJSON("bldg32Internals.json", function(geoJSON) {
-		var indoorLayer = new L.Indoor(geoJSON);
-		//set the current level to show
-		indoorLayer.setLevel("0");
-		mymap.addLayer(indoorLayer);
+	linesLayer = L.geoJson([],{
+		style: function(feature) {
+			return {
+				fillColor: 'white',
+				weight: 5,
+				color: 'red',
+				opacity: 1,
+				fillOpacity: 1
+			};
+	}}).addTo(mymap);
+	makeIndoorLayer();
+}
+
+//get data for the indoorLayer
+function makeIndoorLayer(){
+	$.getJSON("B23&25RoomsAll.json", function(roomsJSON) {
+		GJSONBuilding = roomsJSON;
+		indoorLayer = new L.Indoor(GJSONBuilding, {
+			getLevel: function(feature) { 
+				if (feature.properties.length === 0){
+					return null;
+				}
+				return feature.properties.Level;
+		},
+		onEachFeature: function(feature, layer) {
+			layer.bindPopup(JSON.stringify(feature.properties, null, 4));
+		},
+		//set the style for the items on the layer
+		style: function(feature) {
+			var fill = 'white';
+			if (feature.properties.type === 'Way') {
+				fill = '#169EC6';
+			} else if ((feature.properties.type === 'Stairs') || (feature.properties.type === 'Lift') ) {
+				fill = '#0A485B';
+			} else if (feature.properties.type === 'Route')  {
+				return {
+					fillColor: 'white',
+					weight: 5,
+					color: 'red',
+					opacity: 1,
+					fillOpacity: 1
+				}
+			}
+			return {
+				fillColor: fill,
+				weight: 1,
+				color: '#666',
+				fillOpacity: 1
+			};
+		}});
 		
+		//set the current level to show
+		indoorLayer.setLevel("1");
+		mymap.addLayer(indoorLayer);		
 		levelControl = new L.Control.Level({
-			level: "0",
+			level: "1",
 			levels: indoorLayer.getLevels()
 		});
 		
@@ -67,11 +138,11 @@ function makeMap(){
 		
 		//add the level control to the map
 		levelControl.addTo(mymap);
+		
+		//get a copy of the layers so that we can reset them as required
+		indoorInitConts = jQuery.extend(true, {}, indoorLayer.getLayers());
 	});
-	
-
 }
-
 //get the geojson data from the JSON file specified
 function PopulateGJSONVars() {
 	var geojson = [];
@@ -119,7 +190,7 @@ function drawAllLines(){
 					destNode.linesToDo.splice(index, 1);
 				}
 				//draw a line respresnting this edge
-				drawLine([currNode.node.geometry.coordinates, destNode.node.geometry.coordinates], linesLayer);
+				drawLine([currNode.node.geometry.coordinates, destNode.node.geometry.coordinates], linesLayer,-1);
 			});
 		}
 	});
@@ -141,12 +212,11 @@ function calcRoute(){
 	var startVal = parseInt($("#start")[0].value);
 	var endVal = parseInt($("#end")[0].value);
 	var routefound = false;
-	var priorityQ = []
+	var priorityQ = [];
 	var startNode = GJSONOrdered[startVal];
-	var endNode = GJSONOrdered[endVal]
+	var endNode = GJSONOrdered[endVal];
 	priorityQ[0] = {'val': distBetweenCoords(startNode.geometry.coordinates, endNode.geometry.coordinates), 'distTravelled': 0.0, 'node':startNode, 'route':[startVal]}
 	//while there are nodes to be explored and the top item isnt a solution
-	console.log("new script");
 	while(priorityQ.length > 0 &&priorityQ[0].route.indexOf(endVal) == -1){
 		doOneNode(priorityQ, endNode);
 	}
@@ -156,19 +226,41 @@ function calcRoute(){
 	}else{
 		//if there is an item on the list, then it is a solution, so we return that, yay.
 		console.log("route: " + priorityQ[0].route);
-		var routeCoords = [];
+		var routeCoordsInternal = [];
+		var routeCoordsExternal = [];
+		var currLev = getLevel(GJSONOrdered[priorityQ[0].route[0]]);
+		var currLine = [];
 		priorityQ[0].route.forEach(function(point){
-			routeCoords.push(GJSONOrdered[point].geometry.coordinates);
+		//split the route into levels
+			var newNodeLev = getLevel(GJSONOrdered[point]);
+			if (newNodeLev == currLev){
+				currLine.push(GJSONOrdered[point].geometry.coordinates);
+			}else{
+				if(currLev == -1){
+					drawLine(currLine,linesLayer, {'Level': currLev});
+				}else{
+					drawLine(currLine,indoorLayer, {'Level': currLev});
+				}
+				currLev = newNodeLev;
+				console.log(currLev);
+				currLine = [GJSONOrdered[point].geometry.coordinates];
+			}
 		});
-		console.log(nodesExplored);
-		//and draw the solution as a line
-		drawLine(routeCoords,linesLayer);
+		if(currLev == -1){
+			drawLine(currLine,linesLayer, {'Level': currLev});
+		}else{
+			drawLine(currLine,indoorLayer, {'Level': currLev});
+		}
 	}
-	
 }
 
-var nodesExplored = 0;
-
+function getLevel(node){
+	if(node.properties.hasOwnProperty("Level")){
+		return node.properties.Level;
+	}else{
+		return -1;
+	}
+}
 //method for calculating the nodes which can be navigated to from the top node in the index array.
 //removes top node from index and adds new nodes to it
 function doOneNode(index, dest){
@@ -176,7 +268,6 @@ function doOneNode(index, dest){
 	index.splice(0,1);
 	currNode.node.properties.LinkedTo.forEach(function(elem){
 		if(currNode.route.indexOf(elem) == -1){
-			nodesExplored = nodesExplored + 1;
 			//calc new index val, the 10000 is arbitrary to make the numbers not tiny.
 			var currNodeCoords = currNode.node.geometry.coordinates;
 			var destNodeCoords = GJSONOrdered[elem].geometry.coordinates;
@@ -222,6 +313,12 @@ function clearMarkers(){
 //function to clear all lines from their layer
 function clearLines(){
 	linesLayer.clearLayers();
+	console.log(indoorInitConts);
+	indoorLayer.setLayers(indoorInitConts);
+	console.log(indoorLayer.getLevels());
+	//indoorLayer.clearLayers();
+	//indoorLayer.addData(GJSONBuilding)
+	//makeIndoorLayer();
 }
 
 //function which returns all edges which are only unidirectionaly
@@ -233,7 +330,10 @@ function findOnewayLinks(){
 			point.properties.LinkedTo.forEach(function(link){
 				if(GJSONOrdered[link].properties.LinkedTo.indexOf(point.properties.id) == -1){
 					//if the currNode is not linked back to by the other node, output the oneway link
+					console.log(point.properties.id + ":::" + point.properties.LinkedTo);
 					console.log(point.properties.id + " -\-> " + link + "\n");
+					console.log(GJSONOrdered[link].properties.id + ":::" + GJSONOrdered[link].properties.LinkedTo);
+					console.log("\n");
 					foundone = true;
 				}
 			});

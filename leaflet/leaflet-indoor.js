@@ -190,7 +190,14 @@ L.Indoor = L.Class.extend({
       if (layer.setStyle) {
         layer.setStyle(style);
       }
-    }
+    },
+	//additions by Edmund King ek7g14@soton.ac.uk
+	getLayers: function(){
+		return this._layers;
+	},
+	setLayers: function(newLayers){
+		this._layers = newLayers;
+	}
 });
 
 L.indoor = function(data, options) {
