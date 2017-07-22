@@ -55,7 +55,7 @@ var indoorLayer = {};
 var levelControl = {};
 
 //intial contents of the indoorLayer
-var indoorInitConts = [];
+var indoorLayers = [];
 
 //function for initalising map based variables
 function makeMap(){
@@ -140,7 +140,7 @@ function makeIndoorLayer(){
 		levelControl.addTo(mymap);
 		
 		//get a copy of the layers so that we can reset them as required
-		indoorInitConts = jQuery.extend(true, {}, indoorLayer.getLayers());
+		indoorLayers = indoorLayer.getLayers();
 	});
 }
 //get the geojson data from the JSON file specified
@@ -313,12 +313,26 @@ function clearMarkers(){
 //function to clear all lines from their layer
 function clearLines(){
 	linesLayer.clearLayers();
-	console.log(indoorInitConts);
-	indoorLayer.setLayers(indoorInitConts);
-	console.log(indoorLayer.getLevels());
-	//indoorLayer.clearLayers();
-	//indoorLayer.addData(GJSONBuilding)
-	//makeIndoorLayer();
+	
+	//hacky solution to remove routes from map
+	keys = Object.keys(indoorLayers);
+	//get all the level layers from the indoorLayer
+	for (var key in keys){		
+		//get the keys to layers
+		var currLayer = indoorLayers[keys[key]];
+		var layerKeys = Object.keys(currLayer._layers)
+		//search through all the layers from last to first to find any with the "Route" tag
+		for (var y = layerKeys.length -1; y > 0 ; y = y - 1){
+			//all the "Route" tagged features should have been added last and therefore are at the end of the list.
+			if(currLayer._layers[layerKeys[y]].feature.properties.type == "Route"){
+				//to remove the route, need to remove the layer, and the feature, so that it isnt redrawn when the layer is redrawn
+				mymap.removeLayer(currLayer._layers[layerKeys[y]]);
+				delete currLayer._layers[layerKeys[y]];
+			}else{
+				break;
+			}
+		}
+	}
 }
 
 //function which returns all edges which are only unidirectionaly
