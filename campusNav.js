@@ -70,7 +70,8 @@ function makeMap(){
 	//when creating the marker layer, add a function to it so that when any new feayres are added a popup is created with the specified html
 	markerLayer = L.geoJson([],{
 			onEachFeature: function(feature,layer) {
-				layer.bindPopup(feature.properties.id + "<br>" + feature.properties.Label + "<br>" + feature.properties.LinkedTo);
+				var popupText = feature.properties.id + "<br>" + feature.properties.Label + "<br>" + feature.properties.LinkedTo + "<br>";
+				layer.bindPopup(popupText);
 			}
 		}).addTo(mymap);
 		
@@ -97,42 +98,49 @@ function makeIndoorLayer(){
 					return null;
 				}
 				return feature.properties.Level;
-		},
-		onEachFeature: function(feature, layer) {
-			layer.bindPopup(JSON.stringify(feature.properties, null, 4));
-		},
+			},
+			onEachFeature: function(feature, layer) {
+				layer.bindPopup(JSON.stringify(feature.properties));
+			},
 		//set the style for the items on the layer
-		style: function(feature) {
-			var fill = 'white';
-			if (feature.properties.type === 'Way') {
-				fill = '#169EC6';
-			} else if ((feature.properties.type === 'Stairs') || (feature.properties.type === 'Lift') ) {
-				fill = '#0A485B';
-			} else if (feature.properties.type === 'Route')  {
-				return {
-					fillColor: 'white',
-					weight: 5,
-					color: 'red',
-					opacity: 1,
-					fillOpacity: 1
+			style: function(feature) {
+				var fill = 'white';
+				if (feature.properties.type === 'Way') {
+					fill = '#169EC6';
+				} else if ((feature.properties.type === 'Stairs') || (feature.properties.type === 'Lift') ) {
+					fill = '#0A485B';
+				} else if (feature.properties.type === 'Route')  {
+					return {
+						fillColor: 'white',
+						weight: 5,
+						color: 'red',
+						opacity: 1,
+						fillOpacity: 1
+					}
 				}
-			}
-			return {
-				fillColor: fill,
-				weight: 1,
-				color: '#666',
-				fillOpacity: 1
-			};
+				return {
+					fillColor: fill,
+					weight: 1,
+					color: '#666',
+					fillOpacity: 1
+				};
 		}});
-		
 		//set the current level to show
 		indoorLayer.setLevel("1");
-		mymap.addLayer(indoorLayer);		
+		
+		//leaflet-indoor layers are missing these methods, so I stole them from a blank geoJson layer.
+		var blankGJson = new L.geoJson();
+		indoorLayer._layerAdd = blankGJson._layerAdd
+		indoorLayer.fire = blankGJson.fire;
+		indoorLayer.listens = blankGJson.listens;
+		
+		mymap.addLayer(indoorLayer);
+		
+		console.log("5");		
 		levelControl = new L.Control.Level({
 			level: "1",
 			levels: indoorLayer.getLevels()
 		});
-		
 		// Connect the level control to the indoor layer
 		levelControl.addEventListener("levelchange", indoorLayer.setLevel, indoorLayer);
 		
