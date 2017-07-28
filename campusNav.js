@@ -48,6 +48,7 @@ var mymap = {};
 
 //vars for the layers of information on the map
 var markerLayer = {};
+var indoorMarkerLayers = [];
 var linesLayer = {};
 var indoorLayer = {};
 
@@ -85,6 +86,7 @@ function makeMap(){
 				fillOpacity: 1
 			};
 	}}).addTo(mymap);
+	
 	makeIndoorLayer();
 }
 
@@ -100,9 +102,9 @@ function makeIndoorLayer(){
 				return feature.properties.Level;
 			},
 			onEachFeature: function(feature, layer) {
-				layer.bindPopup(JSON.stringify(feature.properties));
+				layer.bindPopup(JSON.stringify(feature.properties) + "<br>" + '<input id="DrawRoute" type="button" value="Set Start" onclick=\'setNavPoint(' + JSON.stringify(feature.properties) + ',true)\' /><br><input id="DrawRoute" type="button" value="Set End" onclick=\'setNavPoint(' + JSON.stringify(feature.properties) + ',false)\' />');
 			},
-		//set the style for the items on the layer
+			//set the style for the items on the layer
 			style: function(feature) {
 				var fill = 'white';
 				if (feature.properties.type === 'Way') {
@@ -130,13 +132,12 @@ function makeIndoorLayer(){
 		
 		//leaflet-indoor layers are missing these methods, so I stole them from a blank geoJson layer.
 		var blankGJson = new L.geoJson();
-		indoorLayer._layerAdd = blankGJson._layerAdd
+		indoorLayer._layerAdd = blankGJson._layerAdd;
 		indoorLayer.fire = blankGJson.fire;
 		indoorLayer.listens = blankGJson.listens;
 		
 		mymap.addLayer(indoorLayer);
 		
-		console.log("5");		
 		levelControl = new L.Control.Level({
 			level: "1",
 			levels: indoorLayer.getLevels()
@@ -198,7 +199,12 @@ function drawAllLines(){
 					destNode.linesToDo.splice(index, 1);
 				}
 				//draw a line respresnting this edge
-				drawLine([currNode.node.geometry.coordinates, destNode.node.geometry.coordinates], linesLayer,-1);
+				console.log(currNode);
+				if(currNode.node.properties.Level){
+					drawLine([currNode.node.geometry.coordinates, destNode.node.geometry.coordinates], indoorLayer, {'Level': currNode.node.properties.Level});
+				}else{
+					drawLine([currNode.node.geometry.coordinates, destNode.node.geometry.coordinates], linesLayer, {});
+				}
 			});
 		}
 	});
@@ -208,8 +214,42 @@ function drawAllLines(){
 function drawAllMarkers(){
 	//clear the map of exisiting markers
 	clearMarkers();
+	//split the nodes data into levels
+	var nodes = splitMarkerData();
 	//add all the markers from the data
-	markerLayer.addData(GJSONUnOrdered);
+	indoorMarkerLayers = [];
+	//for each level, check if it is the outdoor level (index -1)
+	for(var key in nodes){
+		if(key != -1){
+			//for indoor layers create a new layer and add it to the correct indoor level layer
+			indoorMarkerLayers[key] = new L.geoJson(nodes[key],{
+				onEachFeature: function(feature,layer) {
+					var popupText = feature.properties.id + "<br>" + feature.properties.Label + "<br>" + feature.properties.LinkedTo + "<br>";
+					layer.bindPopup(popupText);
+				}
+			});
+			indoorLayer._layers[key].addLayer(indoorMarkerLayers[key]);
+		}else{
+			markerLayer.addData(nodes[-1]);
+		}
+	}
+}
+
+//a function which splits marker data into levels
+function splitMarkerData(){
+	//split the GJSON into groups for floors and outdoor
+	var splitNodes = [];
+	//add the external markers to the external map
+	splitNodes[-1] = [];
+	//add each of the internal markers to their own layergroup, then add that group to the right 
+	GJSONUnOrdered.forEach( function (elem) {
+		if (elem.properties.hasOwnProperty("Level")){
+			splitNodes[elem.properties.Level] ? splitNodes[elem.properties.Level].push(elem) : splitNodes[elem.properties.Level] = [elem];
+		}else{
+			splitNodes[-1].push(elem);
+		}
+	});
+	return splitNodes;
 }
 
 //method for calculating the route between two specified nodes
@@ -250,7 +290,6 @@ function calcRoute(){
 					drawLine(currLine,indoorLayer, {'Level': currLev});
 				}
 				currLev = newNodeLev;
-				console.log(currLev);
 				currLine = [GJSONOrdered[point].geometry.coordinates];
 			}
 		});
@@ -317,6 +356,9 @@ function distBetweenCoords(coord1, coord2){
 //function to clear all markers from their layer
 function clearMarkers(){
 	markerLayer.clearLayers();
+	for (var key in indoorMarkerLayers){
+		indoorLayer._layers[key].removeLayer(indoorMarkerLayers[key]);
+	}
 }			
 //function to clear all lines from their layer
 function clearLines(){
@@ -364,5 +406,17 @@ function findOnewayLinks(){
 	//if no-one way links are discovered then tell the user this.
 	if (!foundone){
 		console.log("No one way links found!");
+	}
+}
+
+//thing thing thing
+function setNavPoint(point, start){
+	
+	//TODO: NOT LEAVE THIS HERE, FIX THE DATA TO INCLUDE A THING FOR BULIDING No
+	var buildingNo = 23;
+	if (start) {
+		$("#start")[0].value = "" + buildingNo + point.id;
+	}else{
+		$("#end")[0].value = "" + buildingNo + point.id;
 	}
 }
