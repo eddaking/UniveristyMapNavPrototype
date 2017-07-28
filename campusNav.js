@@ -62,6 +62,7 @@ var indoorLayers = [];
 function makeMap(){
 	//create a new map, centre on soton, using soton maps tiles
 	mymap = L.map('map').setView([50.93564, -1.39614], 17);
+	//http://tiles.maps.southampton.ac.uk/aer/{z}/{x}/{y}.png
 	L.tileLayer('http://tiles.maps.southampton.ac.uk/map/{z}/{x}/{y}.png', {
 		attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
 		maxZoom: 20
@@ -158,7 +159,7 @@ function PopulateGJSONVars() {
 	$.ajax({
 		'async': false,
 		'global': false,
-		'url': "/testNodes.json",
+		'url': "testNodes.json",
 		'dataType': "json",
 		'success': function (data) {
 			geojson = data;
