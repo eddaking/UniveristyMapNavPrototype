@@ -22,11 +22,6 @@
 		
 	</div>
 	<div>
-		<input id="drawAll" type="button" value="Draw All Routes" onclick="drawAllLines();" />
-		<input id="drawAll" type="button" value="Clear All Lines" onclick="clearLines();" /><br>
-		<input id="drawAll" type="button" value="Draw All Markers" onclick="drawAllMarkers();" />
-		<input id="drawAll" type="button" value="Clear All Markers" onclick="clearMarkers();" /><br>
-		<input id="drawAll" type="button" value="Refresh Data" onclick="PopulateGJSONVars();" /><br>
 		<form>
 			<label for="start">Start</label>
 			<input id="start" type='number'/> <br>
@@ -34,6 +29,11 @@
 			<input id="end" type='number'/> <br>
 		</form>
 		<input id="DrawRoute" type="button" value="Calc Route" onclick="calcRoute();" /><br>
+		<input id="drawAll" type="button" value="Draw All Routes" onclick="drawAllLines();" />
+		<input id="drawAll" type="button" value="Clear All Lines" onclick="clearLines();" /><br>
+		<input id="drawAll" type="button" value="Draw All Markers" onclick="drawAllMarkers();" />
+		<input id="drawAll" type="button" value="Clear All Markers" onclick="clearMarkers();" /><br>
+		<input id="drawAll" type="button" value="Refresh Data" onclick="PopulateGJSONVars();" /><br>
 		<input id="drawAll" type="button" value="Find one way links" onclick="findOnewayLinks();" /><br>
 	</div>
 	<script> 
