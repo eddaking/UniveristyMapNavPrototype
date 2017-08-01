@@ -159,7 +159,7 @@
 {"geometry": {"type": "Point", "coordinates": [-1.3932678877739453, 50.934653794860814]}, "type": "Feature", "properties": {"LinkedTo": "20073", "Level": "2", "id": 232049, "Label": "23/2049"}},
 {"geometry": {"type": "Point", "coordinates": [-1.3932437902628045, 50.93483770580163]}, "type": "Feature", "properties": {"LinkedTo": "20039,20058,20059", "Level": "2", "id": 232804, "Label": "23/2804"}},
 {"geometry": {"type": "Point", "coordinates": [-1.3933810381558909, 50.934854907213]}, "type": "Feature", "properties": {"LinkedTo": "20059,20060,20068,20069", "Level": "2", "id": 232703, "Label": "23/2703"}},
-{"geometry": {"type": "Point", "coordinates": [-1.3935680180313785, 50.93484585707538]}, "type": "Feature", "properties": {"LinkedTo": "20044,20045,20046,20047,20050,20051,20052,20053,20062", "Level": "2", "id": 232701, "Label": "23/2701"}},
+{"geometry": {"type": "Point", "coordinates": [-1.3935680180313785, 50.93484585707538]}, "type": "Feature", "properties": {"LinkedTo": "20044,20045,20046,20047,20050,20051,20052,20053,20062,20098", "Level": "2", "id": 232701, "Label": "23/2701"}},
 {"geometry": {"type": "Point", "coordinates": [-1.3934845439575665, 50.9348845090201]}, "type": "Feature", "properties": {"LinkedTo": "20054,232801", "Level": "2", "id": 232802, "Label": "23/2802"}},
 {"geometry": {"type": "Point", "coordinates": [-1.3935908814934737, 50.93474651227364]}, "type": "Feature", "properties": {"LinkedTo": "20053", "Level": "2", "id": 232027, "Label": "23/2027"}},
 {"geometry": {"type": "Point", "coordinates": [-1.3936839050238594, 50.93472823413644]}, "type": "Feature", "properties": {"LinkedTo": "20052", "Level": "2", "id": 232029, "Label": "23/2029"}},
@@ -176,7 +176,7 @@
 {"geometry": {"type": "Point", "coordinates": [-1.3933494057077325, 50.934711767222964]}, "type": "Feature", "properties": {"LinkedTo": "20064,20067,231803", "Level": "2", "id": 232803, "Label": "23/2803"}},
 {"geometry": {"type": "Point", "coordinates": [-1.3933847228290994, 50.93467021147113]}, "type": "Feature", "properties": {"LinkedTo": "20077", "Level": "2", "id": 232061, "Label": "23/2061"}},
 {"geometry": {"type": "Point", "coordinates": [-1.3935976035913566, 50.93483986226877]}, "type": "Feature", "properties": {"LinkedTo": "20047,20048,20049", "Level": "2", "id": 232706, "Label": "23/2706"}},
-{"geometry": {"type": "Point", "coordinates": [-1.393455043801618, 50.934898279490575]}, "type": "Feature", "properties": {"LinkedTo": "20040,20041,20042,20043,20054,20068", "Level": "2", "id": 232702, "Label": "23/2702"}},
+{"geometry": {"type": "Point", "coordinates": [-1.393455043801618, 50.934898279490575]}, "type": "Feature", "properties": {"LinkedTo": "20040,20041,20042,20043,20054,20068,20098", "Level": "2", "id": 232702, "Label": "23/2702"}},
 {"geometry": {"type": "Point", "coordinates": [-1.3933128345856423, 50.93471368340746]}, "type": "Feature", "properties": {"LinkedTo": "20066,20067,20074", "Level": "2", "id": 232707, "Label": "23/2707"}},
 {"geometry": {"type": "Point", "coordinates": [-1.3933761853268667, 50.93473325551551]}, "type": "Feature", "properties": {"LinkedTo": "20063,20064,20065", "Level": "2", "id": 232708, "Label": "23/2708"}},
 {"geometry": {"type": "Point", "coordinates": [-1.3932697986409734, 50.93478803226405]}, "type": "Feature", "properties": {"LinkedTo": "20060,20061", "Level": "2", "id": 232704, "Label": "23/2704"}},
@@ -294,6 +294,6 @@
 {"geometry": {"type": "Point", "coordinates": [-1.393489899472546, 50.934903823329336]}, "type": "Feature", "properties": {"LinkedTo": "233081,233708", "Level": "3", "id": 20095, "Label": "Door: 3081, 3708"}},
 {"geometry": {"type": "Point", "coordinates": [-1.393518314608182, 50.934893474303095]}, "type": "Feature", "properties": {"LinkedTo": "233706,233801", "Level": "3", "id": 20096, "Label": "Door: 3706, 3801"}},
 {"geometry": {"type": "Point", "coordinates": [-1.393627856044932, 50.93477395923321]}, "type": "Feature", "properties": {"LinkedTo": "233706,233901", "Level": "3", "id": 20097, "Label": "Door: 3706, 3901"}},
-{"geometry": {"type": "Point", "coordinates": [-1.393513880468163, 50.934911806677896]}, "type": "Feature", "properties": {"LinkedTo": "232701,232702", "Level": "2", "id": 20097, "Label": "Door: 2701, 2702"}}
+{"geometry": {"type": "Point", "coordinates": [-1.393513880468163, 50.934911806677896]}, "type": "Feature", "properties": {"LinkedTo": "232701,232702", "Level": "2", "id": 20098, "Label": "Door: 2701, 2702"}}
 ]
 }
