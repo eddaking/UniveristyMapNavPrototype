@@ -6,60 +6,64 @@ import os
 import json
 import pprint
 
+#class for main display
 class Home:
-	def __init__(self, master):
 
+	#constructor
+	def __init__(self, master, dataManager):
+		
+		self.dataManager = dataManager
+		
+		#create frame for holding buttons
 		frame = Frame(master)
 		frame.pack()
-
+		
+		#create button for selecting a file
 		self.file_select = Button(frame, text="Select File", command=lambda: self.selectFile(master))
 		self.file_select.pack(side=LEFT)
 		
-		self.button = Button(
-			frame, text="QUIT", fg="red", command=frame.quit
-		)
+		#create button for quitting the application
+		self.button = Button(frame, text="QUIT", fg="red", command=frame.quit)
 		self.button.pack(side=LEFT)
 		
+	#method handling click on selectFile - param specifying parent of display.
 	def selectFile(self, master):
-		#get the current dir of the script and make that the file dialog init loc
-		dir_path = os.path.dirname(os.path.realpath(__file__))
-		filename = 'C:\\Users\\emk1n17\\Documents\\LocalGit\\UniveristyMapNavPrototype\\testNodes.json'
-		#TODO: undo this
-		#filename = askopenfilename(initialdir=dir_path)
-		if (filename):
-			data = loadFile(filename)
-			keys = []
-			for feature in data['features']:
-				for key, value in feature['properties'].items():
-					if key not in keys:
-						keys.append(key)
-			
-			keys.append('Edit')
-			keys.append('Delete')
-			
+		#load file
+		data = self.dataManager.loadFile()
+		#if loading succeeded []=false, [1]=true
+		if (data):
+			#
 			tableFrame = Frame(master)
-			tableFrame.pack()
+			tableFrame.pack(side=LEFT, fill=BOTH, expand=TRUE)
 			
-			scrFrame = VerticalScrolledFrame(master)
-			scrFrame.pack(side=LEFT, fill=BOTH, expand=TRUE)
+			#TODO: fix scrolling for diff OSs
+			#ref: https://stackoverflow.com/questions/17355902/python-tkinter-binding-mousewheel-to-scrollbar
+			scrFrame = VerticalScrolledFrame(tableFrame)
+			scrFrame.pack(side=TOP, fill=BOTH, expand=TRUE)
 			
 			dataFrame = Frame(scrFrame.interior, bg = "#000000")
+			
+			#draw headers
+			keys = self.__getHeaders(data)
 			self.addGridRow(dataFrame, 0, keys);
-			for col in range(len(keys)):
-				dataFrame.grid_columnconfigure(col, weight=1)
 			
-			row = 1
-			
-			for feature in data['features']:
-				fProp = feature['properties']
-				data = [fProp['id'], fProp['Label'], fProp['LinkedTo']]
+			#draw table row by row
+			rowNo = 1
+			for row in data:
+				obj = row.getData()
+				fProp = obj['properties']
+				#put the data to be displayed in this array
+				displayData = [fProp['id'], fProp['Label'], fProp['LinkedTo']]
+				#TODO:stop catching blank level - abstractify and remove
+				#potentially move into dataManager
 				if 'Level' in fProp:
-					data.append(fProp['Level'])
+					displayData.append(fProp['Level'])
 				else:
-					data.append(-1)
-				DataRow(data, dataFrame, row)
-				row = row + 1
+					displayData.append(-1)
+				row.addGridRow(dataFrame, rowNo, displayData)
+				rowNo = rowNo + 1
 			dataFrame.pack()
+	
 	def addGridRow(self, grid, row, data):
 		i = 0
 		for elem in data:
@@ -67,48 +71,129 @@ class Home:
 			Label(elemFrame, text=elem).pack(side="left")
 			elemFrame.grid(sticky="W"+"E", pady = 1,padx = 1, row = row, column = i)
 			i = i + 1
+	
+	#method for returning all headers in the properties field
+	def __getHeaders(self, allRows):
+		keys = []
+		for row in allRows:
+			for key, value in row.getData()['properties'].items():
+				if key not in keys:
+					keys.append(key)
+		keys.append('Edit?')
+		keys.append('Delete?')
+		return keys
+
+#class representing each row of data in the display
+#contains both data and gui references
 class DataRow:
-	def __init__(self, data, grid, row):
+
+	#constructor
+	def __init__(self, dm, data, index):
+		self.dm = dm
 		self.data = data
+		self.index = index
+		
+	#method for creating GUI elements
+	#probs shouldnt need 'text' 
+	#TODO: sort that out
+	def addGridRow(self, grid, row, text):
 		self.row = row
 		self.parent = grid
-		self.__addGridRow()
-	def __addGridRow(self):
 		LabelsAndFrames = []
 		i = 0
-		for elem in self.data:
+		for elem in text:
 			LabelsAndFrames.append(self.__attachLabelToFrame(i, elem))
 			i = i + 1
 		LabelsAndFrames.append(self.__attachButtonToFrame(i, "Edit", lambda: self.__edit()))
 		LabelsAndFrames.append(self.__attachButtonToFrame(i + 1, "Delete", lambda: self.__del()))
 		self.LabelsAndFrames = LabelsAndFrames
+	
+	#method to create a label and attach it to the parent in the correct grid ref
 	def __attachLabelToFrame(self, col, text):
 		elemFrame = Frame(self.parent)
 		l = Label(elemFrame, text=text)
 		l.pack(side="left")
 		elemFrame.grid(sticky="W"+"E", pady = 1, padx = 1, row = self.row, column = col)
 		return [elemFrame, l]
+	
+	#method to create a button and attach it to the parent in the correct grid ref
 	def __attachButtonToFrame(self, col, text, lmda):
 		elemFrame = Frame(self.parent)
-		b = Button(elemFrame, text=text, command=lmda, bd = 0, bg = "#E1E1E1", relief
- = "solid")
-		b.pack(side="left")
+		b = Button(elemFrame, text=text, command=lmda, bd = 0, bg = "#E1E1E1", relief = "solid")
+		b.pack()
 		elemFrame.grid(sticky="W"+"E", padx = 1, row = self.row, column = col)
 		return [elemFrame, b]
+	
+	#method for event of 'edit' button click
 	def __edit(self):
 		self.LabelsAndFrames[0][1]['text'] = "Test"
 		print("TODO: implement editing")
+	
+	#method for event 'delete' button click
 	def __del(self):
 		for label in self.LabelsAndFrames:
 			label[0].destroy()
-			
-		print("TODO: implement deletion")
+		self.dm.delRec(self.index)
+		self.data = {}
+	
+	#method for getting data obj
+	#currently unused
+	#also can be bypassed with dm.data
+	def getData(self):
+		return self.data
+
+#class for handling data import, export and control
+class DataManager:
+	
+	#methods TODO:
+	#saveFile(self)
+	
+	#constructor
+	def __init__(self):
+		self.changed = False
+		self.allData = []
+	
+	#method returning a bool specifiying if the data has been changed
+	def isChanged(self):
+		return self.changed
 		
-def loadFile(fileLoc):
-	with open(fileLoc) as f:
-		d = json.load(f)
-	return d
+	#method for loading files
+	def loadFile(self):
+		#get the current dir of the script and make that the file dialog init loc
+		dir_path = os.path.dirname(os.path.realpath(__file__))
+		#TODO: undo this
+		filename = 'C:\\Users\\emk1n17\\Documents\\LocalGit\\UniveristyMapNavPrototype\\testNodes.json'
+		#filename = askopenfilename(initialdir=dir_path)
+		#if file selected - load it
+		if (filename):
+			with open(filename) as f:
+				readFile = json.load(f)
+			#for each feature (data point) create a row obj
+			for feature in readFile['features']:
+				self.allData.append(DataRow(self, feature, len(self.allData)))
+		return self.allData
+	
+	#method for deleting an element from the data
+	def delRec(self, index):
+		print(len(self.allData))
+		self.allData.pop(index)
+		self.changed = True
+		print(len(self.allData))
+	
+	#method for updating an element from the data
+	def updateRec(self, index, propList):
+		#TODO:the actual updating
+		self.changed = True
+	
+	#method for adding a new element to the data
+	def addRec(self, row):
+		self.allData.append(row)
+		self.changed = True
+	
+	def getAllRows(self):
+		return self.allData
 	
 root = Tk()
-app = Home(root)
+dm = DataManager()
+app = Home(root, dm)
 root.mainloop()
