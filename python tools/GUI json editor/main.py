@@ -127,7 +127,11 @@ class DataRow:
 	#method for event of 'edit' button click
 	def __edit(self):
 		self.LabelsAndFrames[0][1]['text'] = "Test"
+		self.edit = DataInputBox(lambda: self.__test())
 		print("TODO: implement editing")
+	
+	def __test(self):
+		print("success")
 	
 	#method for event 'delete' button click
 	def __del(self):
@@ -170,6 +174,8 @@ class DataManager:
 				readFile = json.load(f)
 			#for each feature (data point) create a row obj
 			for feature in readFile['features']:
+				if ',' in feature['properties']['Label']:
+					print(feature)
 				self.allData.append(DataRow(self, feature, len(self.allData)))
 		return self.allData
 	
@@ -192,8 +198,31 @@ class DataManager:
 	
 	def getAllRows(self):
 		return self.allData
+
+#a class manging data input
+class DataInputBox:
+	#constructor
+	def __init__(self, lmda, data = {}):
+		self.top = top = Toplevel()
+		rows = []
+		self.rowNo = 0
+		rows.append(self.__createRow("id",top))
+		self.rowNo += 1
+		
+		Button(top, text="test", command=lmda).grid(row = self.rowNo, sticky="W"+"E")
 	
+	#method for creating a row in the input dialog
+	def __createRow(self, labelText, parent):
+		row = Frame(parent)
+		Label(row, text=labelText).pack(side="left")
+		Entry(row).pack(side="left", fill=BOTH, expand=TRUE)
+		row.grid(row = self.rowNo, sticky="W"+"E")
+		return row
 root = Tk()
+#my_window.grab_set()
+#self.grab_release()
+#self.top = tki.Toplevel()
+
 dm = DataManager()
 app = Home(root, dm)
 root.mainloop()
