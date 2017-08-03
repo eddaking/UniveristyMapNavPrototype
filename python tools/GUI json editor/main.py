@@ -153,9 +153,10 @@ class DataManager:
 	#saveFile(self)
 	
 	#constructor
-	def __init__(self):
+	def __init__(self, schemaLoc):
 		self.changed = False
 		self.allData = []
+		self.schema = self.__loadSchema(schemaLoc)
 	
 	#method returning a bool specifiying if the data has been changed
 	def isChanged(self):
@@ -196,6 +197,68 @@ class DataManager:
 		self.allData.append(row)
 		self.changed = True
 	
+	#method to load the schema from file into a dict
+	def __loadSchema(self, schemaLoc):
+	
+		#read the file
+		with open(schemaLoc) as f:
+			s = f.read()
+		
+		#split the file into lines
+		schemaArray = s.split('\n')
+		
+		#create the schema obj
+		schemaObj = {}
+		#array showing the current indexes we are working at
+		currIndexes = []
+		
+		#for each line in the schema, check how many tabs are at the front of the line
+		for line in schemaArray:
+			line = line.rstrip()
+			
+			#if there are fewer tabs than indexes, then we have moved up a level in the dictionary, so remove the last index
+			if (line.count('\t') < len(currIndexes)):
+				currIndexes.pop()
+				
+			#if there are more tabs than items in the schema, then the schema is broken
+			elif (line.count('\t') > len(currIndexes)):
+				print("You may have broken the Schema")
+			
+			line = line.strip()
+			
+			#if the final char in the line is a :, then we have to add a new level to the dict
+			if (line[-1] == ":"):
+				self.__addToSchema(schemaObj, currIndexes, line[:-1], {})
+				currIndexes.append(line[:-1])
+				
+			#if not then we are adding a property to the indexed dict
+			else:
+				#only split on the first :
+				property = line.split(':',1)
+				self.__addToSchema(schemaObj, currIndexes, property[0].strip(), property[1].strip())
+		print(schemaObj)
+		#TODO: get keys from schema obj in a recusive manner into an array (ignore keys linked to other dicts)
+		for key in schemaObj:
+			print(key)
+		
+	#method for recursively adding new items to the schema object
+	def __addToSchema(self, obj, indexes, property, val = {}):
+	
+		#if there are indexes, then we need to traverse the dict to the sepcified loc
+		if (indexes):
+		
+			#split the indexes array into the top element and the rest
+			restIndex = indexes.copy()
+			topIndex = restIndex.pop(0)
+			
+			#update the dict referenced, with the result of the recusive call
+			obj[topIndex].update(self.__addToSchema(obj[topIndex], restIndex, property, val))
+			return obj
+		
+		#if no indexes, then just add the property/val to the dict at this level
+		obj[property] = val
+		return obj
+		
 	def getAllRows(self):
 		return self.allData
 
@@ -223,6 +286,6 @@ root = Tk()
 #self.grab_release()
 #self.top = tki.Toplevel()
 
-dm = DataManager()
+dm = DataManager(os.path.dirname(os.path.realpath(__file__))+"\schema.txt")
 app = Home(root, dm)
 root.mainloop()
