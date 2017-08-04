@@ -1,9 +1,0 @@
-geometry:
-	type: (Point|Polygon)
-	coordinates: (-)?[0-9]+\.[0-9]+
-type: (Feature)
-properties: 
-	LinkedTo: [0-9]+(,[0-9]+)*
-	Level: [0-9]+
-	id: [0-9]+
-	Label: .+
