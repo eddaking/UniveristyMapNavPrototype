@@ -55,23 +55,3 @@ class VerticalScrolledFrame(Frame):
         def _on_mousewheel(event):
             canvas.yview_scroll(-1*int(event.delta/120), "units")
         canvas.bind_all("<MouseWheel>", _on_mousewheel)
-
-
-if __name__ == "__main__":
-
-    class SampleApp(Tk):
-        def __init__(self, *args, **kwargs):
-            root = Tk.__init__(self, *args, **kwargs)
-
-
-            self.frame = VerticalScrolledFrame(root)
-            self.frame.pack()
-            self.label = Label(text="Shrink the window to activate the scrollbar.")
-            self.label.pack()
-            buttons = []
-            for i in range(10):
-                buttons.append(Button(self.frame.interior, text="Button " + str(i)))
-                buttons[-1].pack()
-
-    app = SampleApp()
-    app.mainloop()
