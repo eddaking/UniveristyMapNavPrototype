@@ -1,6 +1,7 @@
 #this is in python 3, try that first if things dont work
 import os
 import json
+import ast
 import tkinter as TKI
 from tkinter.filedialog import askopenfilename
 from scrframe import VerticalScrolledFrame
@@ -47,27 +48,17 @@ class Home:
 			scrframe = VerticalScrolledFrame(tableframe)
 			scrframe.pack(side='top', fill='both', expand=True)
 			
-			dataframe = TKI.Frame(scrframe.interior, bg = "#000000")
+			dataframe = TKI.Frame(scrframe.interior, bg="#000000")
 			
 			#draw headers
-			keys = self.__getheaders(data)
+			keys = self.datamanager.getheaders()
 			self.addgridrow(dataframe, 0, keys)
 			
 			#draw table row by row 
 			row_no = 1
-			for row in data:
-				obj = row.getdata()
-				feat_prop = obj['properties']
-				#put the data to be displayed in this array
-				display_data = [feat_prop['id'], feat_prop['Label'], feat_prop['LinkedTo']]
+			for row_no, row in enumerate(data, 1):
 				#TODO:stop catching blank level - abstractify and remove
-				#potentially move into DataManager
-				if 'Level' in feat_prop:
-					display_data.append(feat_prop['Level'])
-				else:
-					display_data.append(-1)
-				row.addgridrow(dataframe, row_no, display_data)
-				row_no = row_no + 1
+				row.addgridrow(dataframe, row_no)
 			dataframe.pack()
 	
 	def addgridrow(self, grid, row, data):
@@ -75,24 +66,21 @@ class Home:
 		for elem in data:
 			elemframe = TKI.Frame(grid)
 			TKI.Label(elemframe, text=elem).pack(side="left")
-			elemframe.grid(sticky="W"+"E", pady = 1, padx = 1, row = row, column = i)
+			elemframe.grid(sticky="W"+"E", pady=1, padx=1, row=row, column=i)
 			i = i + 1
-	
-	#method for returning all headers in the properties field
-	def __getheaders(self, allrows):
-		keys = []
-		for row in allrows:
-			for key in row.getdata()['properties'].keys():
-				if key not in keys:
-					keys.append(key)
-		keys.append('Edit?')
-		keys.append('Delete?')
-		return keys
+
+	def __getkeysfromdata(self, dictioanry):
+		data = []
+		for key, val in dictioanry.items():
+			if isinstance(val, dict):
+				data = data + self.__getkeysfromdata(dictioanry[key])
+			else:
+				data.append(key)
+		return data
 
 #class representing each row of data in the display
 #contains both data and gui references
 class DataRow:
-
 	#constructor
 	def __init__(self, datamanager, data, index):
 		self.datamanager = datamanager
@@ -102,60 +90,63 @@ class DataRow:
 		self.parent = None
 		self.editdialog = None
 		self.labelsandframes = []
-		
+	def __gettextfromdata(self, dictioanry, index=[]):
+		data = []
+		for key, val in dictioanry.items():
+			if isinstance(val, dict):
+				newindex = index.copy()
+				newindex.append(key)
+				data = data + self.__gettextfromdata(dictioanry[key], newindex)
+			else:
+				data.append([index + [key], val])
+		return data
 	#method for creating GUI elements
-	#probs shouldnt need 'text' 
-	#TODO: sort that out
-	def addgridrow(self, grid, row, text):
+	def addgridrow(self, grid, row):
 		self.row = row
 		self.parent = grid
-		i = 0
-		for elem in text:
-			self.labelsandframes.append(self.__attachlabeltoframe(i, elem))
-			i = i + 1
-		self.labelsandframes.append(self.__attachbuttontoframe(i, "Edit", lambda: self.__edit()))
-		self.labelsandframes.append(self.__attachbuttontoframe(i + 1, "Delete", lambda: self.__del()))
-	
+		headerlen = len(self.datamanager.getheaders())
+		for elem in self.__gettextfromdata(self.data):
+			rowfunc = self.datamanager.getcolfromindex
+			self.labelsandframes.append(self.__attachlabeltoframe(rowfunc(elem[0]), elem[1]))
+		self.labelsandframes.append(self.__attachbuttontoframe(headerlen-2, "Edit", lambda: self.__edit()))
+		self.labelsandframes.append(self.__attachbuttontoframe(headerlen-1, "Delete", lambda: self.__del()))
 	#method to create a label and attach it to the parent in the correct grid ref
 	def __attachlabeltoframe(self, col, text):
 		elem_frame = TKI.Frame(self.parent)
-		lbl = TKI.Label(elem_frame, text=text)
+		lbl = TKI.Label(elem_frame, text=str(text))
 		lbl.pack(side="left")
-		elem_frame.grid(sticky="W"+"E", pady = 1, padx = 1, row = self.row, column = col)
+		elem_frame.grid(sticky="W"+"E", pady=1, padx=1, row=self.row, column=col)
 		return [elem_frame, lbl]
-	
 	#method to create a button and attach it to the parent in the correct grid ref
 	def __attachbuttontoframe(self, col, text, lmda):
 		elemframe = TKI.Frame(self.parent)
-		btn = TKI.Button(elemframe, text=text, command=lmda, bd = 0, bg = "#E1E1E1", relief = "solid")
+		btn = TKI.Button(elemframe, text=text, command=lmda, bd=0, bg="#E1E1E1", relief="solid")
 		btn.pack()
-		elemframe.grid(sticky="W"+"E", padx = 1, row = self.row, column = col)
+		elemframe.grid(sticky="W"+"E", padx=1, row=self.row, column=col)
 		return [elemframe, btn]
-	
 	#method for event of 'edit' button click
 	def __edit(self):
-		self.labelsandframes[0][1]['text'] = "Test"
-		self.editdialog = DataInputBox(lambda: self.__update(), self.data)
-		print("TODO: implement editing")
-	
+		self.editdialog = DataInputBox(lambda: self.__update(), self.data, self.datamanager.getschema())
 	def __update(self):
 		properties = self.editdialog.getinputs()
-		self.datamanager.update_rec(self.index, properties)
-		print("success")
+		if properties[0]:
+			self.data = properties[1]
+			self.datamanager.updaterec(self.index, properties[1])
+			self.addgridrow(self.parent, self.row)
+			self.editdialog.closewindow()
+		print(properties)
 	
 	#method for event 'delete' button click
 	def __del(self):
 		for label in self.labelsandframes:
 			label[0].destroy()
-		self.datamanager.delRec(self.index)
+		self.datamanager.delrec(self.index)
 		self.data = {}
-	
 	def getdata(self):
 		return self.data
 
 #class for handling data import, export and control
 class DataManager:
-	
 	#methods TODO:
 	#saveFile(self)
 	
@@ -164,8 +155,14 @@ class DataManager:
 		self.schemaloc = schemaLoc
 		self.changed = False
 		self.alldata = []
+		self.indexheaderref = {}
+		self.headers = []
+
 		self.schema = self.__loadschema()
-	
+
+		self.__genheaders(self.schema)
+		self.headers.append('Edit?')
+		self.headers.append('Delete?')
 	#method returning a bool specifiying if the data has been changed
 	def is_changed(self):
 		return self.changed
@@ -186,20 +183,18 @@ class DataManager:
 		return self.alldata
 	
 	#method for deleting an element from the data
-	def del_rec(self, index):
+	def delrec(self, index):
 		print(len(self.alldata))
 		self.alldata.pop(index)
 		self.changed = True
 		print(len(self.alldata))
 	
 	#method for updating an element from the data
-	def update_rec(self, index, record):
+	def updaterec(self, index, record):		
 		self.alldata[index] = record
-		#TODO:the actual updating
-		self.changed = True
-	
+		self.changed = True	
 	#method for adding a new element to the data
-	def add_rec(self, row):
+	def addrec(self, row):
 		self.alldata.append(row)
 		self.changed = True
 	
@@ -207,67 +202,136 @@ class DataManager:
 	def __loadschema(self):
 		if self.schemaloc:
 			with open(self.schemaloc) as file:
-				self.schema = json.load(file)
-			
+				return json.load(file)
+	#method for generating all headers from the schema
+	def __genheaders(self, schema, index=[]):
+		for key, val in schema.items():
+			if isinstance(val, dict):
+				newindex = index.copy()
+				newindex.append(key)
+				self.__genheaders(schema[key], newindex)
+			else:
+				self.headers.append(key)
+				self.indexheaderref[str(index + [key])] = len(self.headers) - 1
+	#method for getting all headers from the schema
+	def getheaders(self):
+		return self.headers
+	#method which returns the column in which the specified data index should appear
+	def getcolfromindex(self, index):
+		return self.indexheaderref[str(index)]
 	def getschema(self):
 		return self.schema
 
 #a class manging data input
 class DataInputBox:
 	#constructor
-	def __init__(self, lmda, data):
-		
-		#canvas = ResizingCanvas(top)		
-		#canvas.pack(fill = 'both', expand = True)
-
-		top = TKI.Tk()
-		masterframe = TKI.Frame(top)
-		masterframe.pack()
-
-		scrframe = VerticalScrolledFrame(masterframe)
-		scrframe.pack(side='top', fill='both', expand=True)
-		dataframe = TKI.Frame(scrframe.interior, bg = "#000000")
-		dataframe.pack()
+	def __init__(self, lmda, data, schema):
 		
 		self.entries = []
-		self.row_no = 0		
-		self.__unpackdict(data, dataframe, [])
+		self.row_no = 0
+		self.schema = schema
+		self.dataoriginal = self.__cleardict1andmergedict2(schema.copy(), data)
+
+		self.top = top = TKI.Tk()
+
+		masterframe = TKI.Frame(top)
+		masterframe.pack()
 		
-		TKI.Button(dataframe, text="Update", command=lmda).grid(row = self.row_no, sticky="W"+"E")
-	
+		canvas = ResizingCanvas(masterframe)		
+		canvas.pack(fill='both', expand=True)
+
+		scrframe = VerticalScrolledFrame(canvas)
+		scrframe.pack(side='top', fill='both', expand=True)
+		dataframe = TKI.Frame(scrframe.interior, bg="#000000")
+		dataframe.pack()
+
+		self.__unpackdict(self.dataoriginal, dataframe, [])
+		
+		TKI.Button(dataframe, text="Update", command=lmda).grid(row=self.row_no, sticky="W"+"E")
+
+		#force take focus
+		top.grab_set()
+	def __cleardict1andmergedict2(self, dict1, dict2, index=[]):
+		for key, val in dict1.items():
+			newindex = index.copy()
+			newindex.append(key)
+			if isinstance(val, dict):
+				self.__cleardict1andmergedict2(dict1[key], dict2, newindex)
+			else:
+				dict2elem = getdictionaryitemwitharraykey(dict2, newindex)
+				if dict2elem:
+					dict1[key] = dict2elem
+				else:
+					dict1[key] = ""
+		return dict1
 	def __unpackdict(self, dictionary, parent, index):
 		for key, val in dictionary.items():
+			newindex = index.copy()
+			newindex.append(key)
 			if isinstance(val, dict):
 				self.__createrow([key, val], parent, len(index), True)
 				self.row_no += 1
-				newindex = index.copy()
-				newindex.append(key)
 				self.__unpackdict(val, parent, newindex)
 			else:
-				self.entries.append([index], self.__createrow([key, val], parent, len(index)))
+				self.entries.append([newindex, self.__createrow([key, val], parent, len(index))])
 				self.row_no += 1
 		
 	#method for creating a row in the input dialog
-	def __createrow(self, rowdata, parent, dictdepth = 0, textonly = False):
+	def __createrow(self, rowdata, parent, dictdepth=0, textonly=False):
 		row = TKI.Frame(parent)
 		#do a thing
 		for _ in range(0, dictdepth):
-			print(str(dictdepth))
 			rowdata[0] = "\t" + rowdata[0]
 		TKI.Label(row, text=rowdata[0]).pack(side="left")
+		row.grid(row=self.row_no, sticky="W"+"E")
 		if not textonly:
 			entry = TKI.Entry(row)
-			entry.insert(0,rowdata[1])
+			entry.insert(0, str(rowdata[1]))
 			entry.pack(side="left", fill='both', expand=True)
-			row.grid(row = self.row_no, sticky="W"+"E")
 			return entry
-
+	#method which gets the contents of the entry boxes 
+	#returns them in an array with a boolean value specifying if the values have changed
 	def getinputs(self):
-		print("TODO: Implement msgBox input retrieval")
+		datanew = self.dataoriginal.copy()
+		updated = False
+		for entry in self.entries:
+			if self.__compareandsetinputs(datanew, entry[0], entry[1].get()):
+				updated = True
+		return [updated, datanew]
+	#method which takes a dictionary, index and value, 
+	#if the value at the index is the same as the passed value, return true, 
+	#else update the value in the dictionary and return false
+	def __compareandsetinputs(self, dictionary, index, val):
+		if len(index) > 1:
+			top = index.pop(0)
+			return self.__compareandsetinputs(dictionary[top], index, val)
+		else:
+			if not isinstance(dictionary[index[0]], str):
+				val = ast.literal_eval(val)
+			if dictionary[index[0]] == val:
+				return False
+			else:
+				print(type(dictionary[index[0]]))
+				print(type(val))
+				dictionary[index[0]] = val
+				return True
+	def closewindow(self):		
+		#release focus
+		self.top.grab_release()
+		self.top.destroy()
+
+def getdictionaryitemwitharraykey(dictionary, key):
+	if isinstance(key, list):
+		if len(key) > 1:
+			return getdictionaryitemwitharraykey(dictionary[key.pop(0)], key)
+		else:
+			if key[0] in dictionary:
+				return dictionary[key[0]]
+			else:
+				return None
+	else:
+		print("SHOULD HAVE GIVEN ME AN ARRAY!!")
 ROOT = TKI.Tk()
-#my_window.grab_set()
-#self.grab_release()
-#self.top = tki.Toplevel()
 
 DATAMANGER = DataManager(os.path.dirname(os.path.realpath(__file__))+"\\schema.json")
 APP = Home(ROOT, DATAMANGER)
