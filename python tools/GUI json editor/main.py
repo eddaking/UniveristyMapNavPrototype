@@ -2,10 +2,12 @@
 import os
 import json
 import ast
+import re
+import copy
 import tkinter as TKI
+import tkinter.messagebox as messagebox
 from tkinter.filedialog import askopenfilename
 from scrframe import TwoDimScrolledFrame
-from resizingCanvas import ResizingCanvas
 
 #class for main display
 class Home:
@@ -126,14 +128,15 @@ class DataRow:
 		return [elemframe, btn]
 	#method for event of 'edit' button click
 	def __edit(self):
-		self.editdialog = DataInputBox(lambda: self.__update(), self.data, self.datamanager.getschema())
+		self.editdialog = DataInputBox(lambda: self.__update(), self.data, self.datamanager.getschema(), self.datamanager)
 	def __update(self):
 		properties = self.editdialog.getinputs()
-		if properties[0]:
-			self.data = properties[1]
-			self.datamanager.updaterec(self.index, properties[1])
-			self.addgridrow(self.parent, self.row)
-		self.editdialog.closewindow()
+		if properties:
+			if properties[0]:
+				self.data = properties[1]
+				self.datamanager.updaterec(self.index, properties[1])
+				self.addgridrow(self.parent, self.row)
+			self.editdialog.closewindow()
 	
 	#method for event 'delete' button click
 	def __del(self):
@@ -169,9 +172,9 @@ class DataManager:
 	#method for loading files
 	def loadfile(self):
 		#TODO: undo this
-		filename = 'C:\\Users\\emk1n17\\Documents\\LocalGit\\UniveristyMapNavPrototype\\testNodes.json'
+		#filename = 'C:\\Users\\emk1n17\\Documents\\LocalGit\\UniveristyMapNavPrototype\\testNodes.json'
 		#get the current dir of the script and make that the file dialog init loc
-		#filename = askopenfilename(initialdir=os.path.dirname(os.path.realpath(__file__))
+		filename = askopenfilename(initialdir=os.path.dirname(os.path.realpath(__file__)))
 		#if file selected - load it
 		if filename:
 			with open(filename) as file:
@@ -224,19 +227,19 @@ class DataManager:
 #a class manging data input
 class DataInputBox:
 	#constructor
-	def __init__(self, lmda, data, schema):
-		
+	def __init__(self, lmda, data, schema, dm):
+		self.datamanager = dm
 		self.entries = []
 		self.row_no = 0
 		self.schema = schema
-		self.dataoriginal = self.__cleardict1andmergedict2(schema.copy(), data)
+		self.dataoriginal = self.__cleardict1andmergedict2(copy.deepcopy(schema), data)
 
 		self.top = top = TKI.Toplevel()
 
 		masterframe = TKI.Frame(top)
 		masterframe.pack()
 		
-		canvas = ResizingCanvas(masterframe)		
+		canvas = canvas(masterframe)		
 		canvas.pack(fill='both', expand=True)
 
 		scrframe = TwoDimScrolledFrame(canvas)
@@ -296,9 +299,28 @@ class DataInputBox:
 		datanew = self.dataoriginal.copy()
 		updated = False
 		for entry in self.entries:
-			if self.__compareandsetinputs(datanew, entry[0], entry[1].get()):
-				updated = True
+			if self.__checkvalid(entry[0], entry[1].get()):
+				if self.__compareandsetinputs(datanew, entry[0].copy(), entry[1].get()):
+					updated = True
+			else:
+				failedregex = getdictionaryitemwitharraykey(self.schema, entry[0])
+				messagebox.showerror("Invalid Input", "Input: '" + entry[1].get() + "' does not fulfill the required regex: '"
+				+ str(failedregex) + "'")
+				return None
 		return [updated, datanew]
+	#method which checks if user input fits regex
+	def __checkvalid(self, index, val):
+		schemaitem = getdictionaryitemwitharraykey(self.schema, index)
+		if schemaitem:
+			compiledre = re.compile(schemaitem)
+			res =compiledre.match(val)
+			if res:
+				return True
+			else:
+				return False
+		else:
+			print("ERROR FINDING REGEX")
+			return False
 	#method which takes a dictionary, index and value, 
 	#if the value at the index is the same as the passed value, return true, 
 	#else update the value in the dictionary and return false
@@ -312,8 +334,6 @@ class DataInputBox:
 			if dictionary[index[0]] == val:
 				return False
 			else:
-				print(type(dictionary[index[0]]))
-				print(type(val))
 				dictionary[index[0]] = val
 				return True
 	def closewindow(self):		
@@ -324,7 +344,7 @@ class DataInputBox:
 def getdictionaryitemwitharraykey(dictionary, key):
 	if isinstance(key, list):
 		if len(key) > 1:
-			newkey= key.copy()
+			newkey = key.copy()
 			return getdictionaryitemwitharraykey(dictionary[newkey.pop(0)], newkey)
 		else:
 			if key[0] in dictionary:
@@ -333,8 +353,8 @@ def getdictionaryitemwitharraykey(dictionary, key):
 				return None
 	else:
 		print("SHOULD HAVE GIVEN ME AN ARRAY!!")
+		return None
 ROOT = TKI.Tk()
-
 DATAMANGER = DataManager(os.path.dirname(os.path.realpath(__file__))+"\\schema.json")
 APP = Home(ROOT, DATAMANGER)
 ROOT.mainloop()
