@@ -133,8 +133,7 @@ class DataRow:
 			self.data = properties[1]
 			self.datamanager.updaterec(self.index, properties[1])
 			self.addgridrow(self.parent, self.row)
-			self.editdialog.closewindow()
-		print(properties)
+		self.editdialog.closewindow()
 	
 	#method for event 'delete' button click
 	def __del(self):
@@ -232,7 +231,7 @@ class DataInputBox:
 		self.schema = schema
 		self.dataoriginal = self.__cleardict1andmergedict2(schema.copy(), data)
 
-		self.top = top = TKI.Tk()
+		self.top = top = TKI.Toplevel()
 
 		masterframe = TKI.Frame(top)
 		masterframe.pack()
@@ -250,7 +249,9 @@ class DataInputBox:
 		TKI.Button(dataframe, text="Update", command=lmda).grid(row=self.row_no, sticky="W"+"E")
 
 		#force take focus
-		top.grab_set()
+		self.top.grab_set()
+		self.top.lift()
+		self.top.focus_force()
 	def __cleardict1andmergedict2(self, dict1, dict2, index=[]):
 		for key, val in dict1.items():
 			newindex = index.copy()
@@ -323,7 +324,8 @@ class DataInputBox:
 def getdictionaryitemwitharraykey(dictionary, key):
 	if isinstance(key, list):
 		if len(key) > 1:
-			return getdictionaryitemwitharraykey(dictionary[key.pop(0)], key)
+			newKey= key.copy()
+			return getdictionaryitemwitharraykey(dictionary[newKey.pop(0)], newKey)
 		else:
 			if key[0] in dictionary:
 				return dictionary[key[0]]
