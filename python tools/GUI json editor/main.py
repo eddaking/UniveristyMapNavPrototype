@@ -324,8 +324,8 @@ class DataInputBox:
 def getdictionaryitemwitharraykey(dictionary, key):
 	if isinstance(key, list):
 		if len(key) > 1:
-			newKey= key.copy()
-			return getdictionaryitemwitharraykey(dictionary[newKey.pop(0)], newKey)
+			newkey= key.copy()
+			return getdictionaryitemwitharraykey(dictionary[newkey.pop(0)], newkey)
 		else:
 			if key[0] in dictionary:
 				return dictionary[key[0]]

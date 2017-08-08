@@ -96,7 +96,7 @@ class HorizontalScrolledFrame(Frame):
                 canvas.itemconfigure(interior_id, width=canvas.winfo_width())
         canvas.bind('<Configure>', _configure_canvas)
 class TwoDimScrolledFrame(Frame):
-     def __init__(self, parent, *args, **kw):
+    def __init__(self, parent, *args, **kw):
         Frame.__init__(self, parent, *args, **kw)
 
         # create a canvas object and a horizontal and vertical scrollbar for scrolling it
@@ -117,7 +117,7 @@ class TwoDimScrolledFrame(Frame):
 
         # create a frame inside the canvas which will be scrolled with it
         self.interior = interior = Frame(canvas)
-        interior_id = canvas.create_window(0, 0, window=interior, anchor=NW)
+        canvas.create_window(0, 0, window=interior, anchor=NW)
         # track changes to the canvas and frame width and sync them,
         # also updating the scrollbar
         def _configure_interior(event):
@@ -126,23 +126,23 @@ class TwoDimScrolledFrame(Frame):
             canvas.config(scrollregion="0 0 %s %s" % size)
         interior.bind('<Configure>', _configure_interior)
 
-        self.lastMousePos = []
+        self.lastmousepos = []
         def _on_mousewheel(event):
             canvas.yview_scroll(-1*int(event.delta/120), "units")
         canvas.bind_all("<MouseWheel>", _on_mousewheel)
         def _on_mouse2drag(event):
-            if self.lastMousePos:
-                xdiff = int(event.x) - self.lastMousePos[0]
+            if self.lastmousepos:
+                xdiff = int(event.x) - self.lastmousepos[0]
                 xdiff = max(-1, min(xdiff, 1))
-                ydiff = int(event.y) - self.lastMousePos[1]
+                ydiff = int(event.y) - self.lastmousepos[1]
                 ydiff = max(-1, min(ydiff, 1))
                 print(str(xdiff) + " " + str(ydiff))
                 canvas.xview_scroll(xdiff, "units")
                 canvas.yview_scroll(ydiff, "units")
-                self.lastMousePos = []
+                self.lastmousepos = []
             else:
-                self.lastMousePos = [int(event.x), int(event.y)]
+                self.lastmousepos = [int(event.x), int(event.y)]
         def _on_mouse2release(event)    :
-            self.lastMousePos = []
+            self.lastmousepos = []
         canvas.bind_all("<B2-Motion>", _on_mouse2drag)
         canvas.bind_all("<ButtonRelease-2>", _on_mouse2release)
