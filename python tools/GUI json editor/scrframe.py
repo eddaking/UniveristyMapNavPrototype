@@ -52,7 +52,7 @@ class VerticalScrolledFrame(Frame):
         canvas.bind('<Configure>', _configure_canvas)
         def _on_mousewheel(event):
             canvas.yview_scroll(-1*int(event.delta/120), "units")
-        canvas.bind_all("<MouseWheel>", _on_mousewheel)
+        canvas.bind("<MouseWheel>", _on_mousewheel)
 #editions by Edmund King
 class HorizontalScrolledFrame(Frame):
     """A pure Tkinter scrollable frame that actually works!
