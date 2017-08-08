@@ -7,7 +7,7 @@ import copy
 import tkinter as TKI
 import tkinter.messagebox as messagebox
 from tkinter.filedialog import askopenfilename
-from scrframe import TwoDimScrolledFrame
+from scrframe import TwoDimScrolledFrame, VerticalScrolledFrame
 
 #class for main display
 class Home:
@@ -22,6 +22,8 @@ class Home:
 	def __init__(self, master, datamanager):
 		
 		self.datamanager = datamanager
+		self.adddailog = None
+		self.rowno = 0
 		
 		#create frame for holding buttons
 		frame = TKI.Frame(master)
@@ -34,6 +36,8 @@ class Home:
 		#create button for quitting the application
 		self.button = TKI.Button(frame, text="QUIT", fg="red", command=frame.quit)
 		self.button.pack(side='left')
+
+		self.add = TKI.Button(frame, text="Add Data", command=lambda: self.__openadd())
 		
 	#method handling click on selectfile - param specifying parent of display.
 	def selectfile(self, master):
@@ -56,13 +60,14 @@ class Home:
 			keys = self.datamanager.getheaders()
 			self.addgridrow(dataframe, 0, keys)
 			
-			#draw table row by row 
-			row_no = 1
+			#draw table row by row
 			for row_no, row in enumerate(data, 1):
 				#TODO:stop catching blank level - abstractify and remove
 				row.addgridrow(dataframe, row_no)
+				self.rowno = row_no
 			dataframe.pack()
-	
+			self.dataframe = dataframe
+			self.add.pack(side='left')
 	def addgridrow(self, grid, row, data):
 		i = 0
 		for elem in data:
@@ -79,6 +84,15 @@ class Home:
 			else:
 				data.append(key)
 		return data
+	def __openadd(self):
+		self.adddailog = DataInputBox(lambda: self.__add(), {}, self.datamanager.getschema(), self.datamanager)
+	def __add(self):
+		properties = self.adddailog.getinputs()
+		if properties:
+			newrow = self.datamanager.addrec(properties[1])
+			self.rowno = self.rowno + 1
+			newrow[1].addgridrow(self.dataframe, self.rowno + 1)
+			self.adddailog.closewindow()
 
 #class representing each row of data in the display
 #contains both data and gui references
@@ -106,12 +120,12 @@ class DataRow:
 	def addgridrow(self, grid, row):
 		self.row = row
 		self.parent = grid
-		headerlen = len(self.datamanager.getheaders())
+		hdrlen = len(self.datamanager.getheaders())
 		for elem in self.__gettextfromdata(self.data):
 			rowfunc = self.datamanager.getcolfromindex
 			self.labelsandframes.append(self.__attachlabeltoframe(rowfunc(elem[0]), elem[1]))
-		self.labelsandframes.append(self.__attachbuttontoframe(headerlen-2, "Edit", lambda: self.__edit()))
-		self.labelsandframes.append(self.__attachbuttontoframe(headerlen-1, "Delete", lambda: self.__del()))
+		self.labelsandframes.append(self.__attachbuttontoframe(hdrlen-2, "Edit", lambda: self.__edit()))
+		self.labelsandframes.append(self.__attachbuttontoframe(hdrlen-1, "Delete", lambda: self.__del()))
 	#method to create a label and attach it to the parent in the correct grid ref
 	def __attachlabeltoframe(self, col, text):
 		elem_frame = TKI.Frame(self.parent)
@@ -197,8 +211,14 @@ class DataManager:
 		self.changed = True	
 	#method for adding a new element to the data
 	def addrec(self, row):
-		self.alldata.append(row)
+		expectedindex = len(self.alldata)
+		newrow = DataRow(self, row, len(self.alldata))
+		self.alldata.append(newrow)
 		self.changed = True
+		actaulindex = self.alldata.index(newrow)
+		if actaulindex != expectedindex:
+			print("PANICPANICPANICPANIC!!!!")
+		return [actaulindex, newrow]
 	
 	#method to load the schema from file into a dict
 	def __loadschema(self):
@@ -239,10 +259,10 @@ class DataInputBox:
 		masterframe = TKI.Frame(top)
 		masterframe.pack()
 		
-		canvas = canvas(masterframe)		
+		canvas = TKI.Canvas(masterframe)		
 		canvas.pack(fill='both', expand=True)
 
-		scrframe = TwoDimScrolledFrame(canvas)
+		scrframe = VerticalScrolledFrame(canvas)
 		scrframe.pack(side='top', fill='both', expand=True)
 		dataframe = TKI.Frame(scrframe.interior, bg="#000000")
 		dataframe.pack()
@@ -304,8 +324,8 @@ class DataInputBox:
 					updated = True
 			else:
 				failedregex = getdictionaryitemwitharraykey(self.schema, entry[0])
-				messagebox.showerror("Invalid Input", "Input: '" + entry[1].get() + "' does not fulfill the required regex: '"
-				+ str(failedregex) + "'")
+				messagebox.showerror("Invalid Input", "Input: '" + entry[1].get()
+				+ "' does not fulfill the required regex: '" + str(failedregex) + "'")
 				return None
 		return [updated, datanew]
 	#method which checks if user input fits regex
@@ -313,11 +333,8 @@ class DataInputBox:
 		schemaitem = getdictionaryitemwitharraykey(self.schema, index)
 		if schemaitem:
 			compiledre = re.compile(schemaitem)
-			res =compiledre.match(val)
-			if res:
-				return True
-			else:
-				return False
+			res = compiledre.match(val)
+			return bool(res)
 		else:
 			print("ERROR FINDING REGEX")
 			return False
@@ -342,6 +359,8 @@ class DataInputBox:
 		self.top.destroy()
 
 def getdictionaryitemwitharraykey(dictionary, key):
+	if dictionary == {}:
+		return None
 	if isinstance(key, list):
 		if len(key) > 1:
 			newkey = key.copy()
