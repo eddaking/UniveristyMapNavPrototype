@@ -4,7 +4,7 @@ import json
 import ast
 import tkinter as TKI
 from tkinter.filedialog import askopenfilename
-from scrframe import VerticalScrolledFrame
+from scrframe import TwoDimScrolledFrame
 from resizingCanvas import ResizingCanvas
 
 #class for main display
@@ -45,8 +45,8 @@ class Home:
 			
 			#TODO: fix scrolling for diff OSs
 			#ref: https://stackoverflow.com/questions/17355902/python-tkinter-binding-mousewheel-to-scrollbar
-			scrframe = VerticalScrolledFrame(tableframe)
-			scrframe.pack(side='top', fill='both', expand=True)
+			scrframe = TwoDimScrolledFrame(tableframe)
+			scrframe.pack(fill='both', expand=True)
 			
 			dataframe = TKI.Frame(scrframe.interior, bg="#000000")
 			
@@ -239,7 +239,7 @@ class DataInputBox:
 		canvas = ResizingCanvas(masterframe)		
 		canvas.pack(fill='both', expand=True)
 
-		scrframe = VerticalScrolledFrame(canvas)
+		scrframe = TwoDimScrolledFrame(canvas)
 		scrframe.pack(side='top', fill='both', expand=True)
 		dataframe = TKI.Frame(scrframe.interior, bg="#000000")
 		dataframe.pack()
