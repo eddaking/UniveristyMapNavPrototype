@@ -6,7 +6,7 @@ import re
 import copy
 import tkinter as TKI
 import tkinter.messagebox as messagebox
-from tkinter.filedialog import askopenfilename
+from tkinter.filedialog import askopenfilename, asksaveasfilename
 from scrframe import TwoDimScrolledFrame, VerticalScrolledFrame
 
 #class for main display
@@ -39,6 +39,7 @@ class Home:
 
 		self.add = TKI.Button(frame, text="Add Data", command=lambda: self.__openadd())
 		
+		self.save = TKI.Button(frame, text="Save Data", command=lambda: self.__save())
 	#method handling click on selectfile - param specifying parent of display.
 	def selectfile(self, master):
 		#load file
@@ -62,12 +63,12 @@ class Home:
 			
 			#draw table row by row
 			for row_no, row in enumerate(data, 1):
-				#TODO:stop catching blank level - abstractify and remove
 				row.addgridrow(dataframe, row_no)
 				self.rowno = row_no
 			dataframe.pack()
 			self.dataframe = dataframe
 			self.add.pack(side='left')
+			self.save.pack(side='left')
 	def addgridrow(self, grid, row, data):
 		i = 0
 		for elem in data:
@@ -86,6 +87,8 @@ class Home:
 		return data
 	def __openadd(self):
 		self.adddailog = DataInputBox(lambda: self.__add(), {}, self.datamanager.getschema(), self.datamanager)
+	def __save(self):
+		self.datamanager.savefile()
 	def __add(self):
 		properties = self.adddailog.getinputs()
 		if properties:
@@ -148,7 +151,7 @@ class DataRow:
 		if properties:
 			if properties[0]:
 				self.data = properties[1]
-				self.datamanager.updaterec(self.index, properties[1])
+				self.datamanager.updaterec(self.index)
 				self.addgridrow(self.parent, self.row)
 			self.editdialog.closewindow()
 	
@@ -162,10 +165,7 @@ class DataRow:
 		return self.data
 
 #class for handling data import, export and control
-class DataManager:
-	#methods TODO:
-	#saveFile(self)
-	
+class DataManager:	
 	#constructor
 	def __init__(self, schemaLoc):
 		self.schemaloc = schemaLoc
@@ -175,6 +175,8 @@ class DataManager:
 		self.headers = []
 
 		self.schema = self.__loadschema()
+		
+		self.fileheaders = {}
 
 		self.__genheaders(self.schema)
 		self.headers.append('Edit?')
@@ -185,7 +187,6 @@ class DataManager:
 		
 	#method for loading files
 	def loadfile(self):
-		#TODO: undo this
 		#filename = 'C:\\Users\\emk1n17\\Documents\\LocalGit\\UniveristyMapNavPrototype\\testNodes.json'
 		#get the current dir of the script and make that the file dialog init loc
 		filename = askopenfilename(initialdir=os.path.dirname(os.path.realpath(__file__)))
@@ -193,11 +194,28 @@ class DataManager:
 		if filename:
 			with open(filename) as file:
 				readfile = json.load(file)
+			#retain header data
+			for header in readfile:
+				if header != 'features':
+					self.fileheaders[header] = readfile[header]
 			#for each feature (data point) create a row obj
 			for feature in readfile['features']:
 				self.alldata.append(DataRow(self, feature, len(self.alldata)))
 		return self.alldata
-	
+	def savefile(self):
+		#get the current dir of the script and make that the file dialog init loc
+		filename = asksaveasfilename(initialdir=os.path.dirname(os.path.realpath(__file__)))
+		#if file selected - load it
+		if filename:
+			#get headers
+			data = self.fileheaders
+			features = []
+			for item in self.alldata:
+				features.append(item.getdata())
+			data['features'] = features
+
+			with open(filename, 'w') as file:
+				json.dump(data, file)
 	#method for deleting an element from the data
 	def delrec(self, index):
 		print(len(self.alldata))
@@ -206,8 +224,7 @@ class DataManager:
 		print(len(self.alldata))
 	
 	#method for updating an element from the data
-	def updaterec(self, index, record):		
-		self.alldata[index] = record
+	def updaterec(self, index):
 		self.changed = True	
 	#method for adding a new element to the data
 	def addrec(self, row):
