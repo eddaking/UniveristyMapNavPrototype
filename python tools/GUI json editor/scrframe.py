@@ -136,7 +136,6 @@ class TwoDimScrolledFrame(Frame):
                 xdiff = max(-1, min(xdiff, 1))
                 ydiff = int(event.y) - self.lastmousepos[1]
                 ydiff = max(-1, min(ydiff, 1))
-                print(str(xdiff) + " " + str(ydiff))
                 canvas.xview_scroll(xdiff, "units")
                 canvas.yview_scroll(ydiff, "units")
                 self.lastmousepos = []
