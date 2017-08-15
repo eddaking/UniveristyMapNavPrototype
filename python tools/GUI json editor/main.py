@@ -85,7 +85,6 @@ class Home:
 			TKI.Label(elemframe, text=elem).pack(side="left")
 			elemframe.grid(sticky="W"+"E", pady=1, padx=1, row=row, column=i)
 			i = i + 1
-
 	def __getkeysfromdata(self, dictioanry):
 		data = []
 		for key, val in dictioanry.items():
@@ -155,12 +154,21 @@ class DataRow:
 	#method for event of 'edit' button click
 	def __edit(self):
 		self.editdialog = DataInputBox(lambda: self.__update(), self.data, self.datamanager.getschema(), self.datamanager)
+	#method for updating data as a result of an edit
 	def __update(self):
+		#get the inputs from the dialog
 		properties = self.editdialog.getinputs()
+		#if no properties are returned 1+ input were invalid
 		if properties:
+			#properties[0] is a bool specifying if the data was changed, if so, update data
 			if properties[0]:
+				#update data localy
 				self.data = properties[1]
+				#set updated flag in datamanager
 				self.datamanager.updaterec()
+				#TODO: delete  old frames
+
+				#draw a new grid row in the same place as the last one with the new data
 				self.addgridrow(self.parent, self.row)
 			self.editdialog.closewindow()
 	
@@ -170,9 +178,11 @@ class DataRow:
 			label[0].destroy()
 		self.datamanager.delrec(self.index)
 		self.data = {}
+	#change the row on which this data is drawn to the specified one
 	def setrow(self, row):
 		for frame in self.labelsandframes:
 			frame[0].grid(row=row)
+	#method for returning the data stored in the row as a dict
 	def getdata(self):
 		return self.data
 
@@ -198,7 +208,6 @@ class DataManager:
 		self.__genkeys(self.schema)
 
 		self.sortattr = []
-		self.sorttype = None
 	#method returning a bool specifiying if the data has been changed
 	def is_changed(self):
 		return self.changed
@@ -219,31 +228,44 @@ class DataManager:
 			for feature in readfile['features']:
 				self.alldata.append(DataRow(self, feature, len(self.alldata)))
 		return self.alldata
+	#method for sorting data by a specified attribute
 	def sort(self, attribute):
 		self.sortattr = attribute
-		newlist = sorted(self.alldata,
-		  key=functools.cmp_to_key(self.__sortcmp))
+		#get a copy of the data sorted using the custom comparison specifed
+		newlist = sorted(self.alldata, key=functools.cmp_to_key(self.__sortcmp))
+		#for each data item, update its row
 		for i, item in enumerate(newlist, 1):
 			item.setrow(i)
+	#method for saving the edited data
 	def savefile(self):
+		#if nothing has been changed, dont bother saving
+		if not self.changed:
+			return
 		#get the current dir of the script and make that the file dialog init loc
 		filename = asksaveasfilename(initialdir=os.path.dirname(os.path.realpath(__file__)))
 		#if file selected - load it
 		if filename:
 			#get headers
 			data = self.fileheaders
+			#retrieve each row's feature data and put it in an array
 			features = []
 			for item in self.alldata:
 				features.append(item.getdata())
+			#add the feature array to the data var for writing
 			data['features'] = features
-
+			#open the specified file and dump the json to it
 			with open(filename, 'w') as file:
 				json.dump(data, file)
-	def __genkey(self, index):
-		val = getdictionaryitemwitharraykey(index.getdata(), list(ast.literal_eval(self.sortattr.get())))
+			self.changed = False
+	#method for custom comparisons whilst sorting data
 	def __sortcmp(self, x, y):
-		x = getdictionaryitemwitharraykey(x.getdata(), list(ast.literal_eval(self.sortattr.get())))
-		y = getdictionaryitemwitharraykey(y.getdata(), list(ast.literal_eval(self.sortattr.get())))
+		#retrieve the index from the selected optionmenu option
+		#needs to be evaled from string to tuple, then parsed into a list
+		index = list(ast.literal_eval(self.sortattr.get()))
+		#get the two values in the data using an array as index
+		x = getdictionaryitemwitharraykey(x.getdata(), index)
+		y = getdictionaryitemwitharraykey(y.getdata(), index)
+		#basically assume None is -inf in all comparisons and return according values
 		if x == y:
 			return 0
 		if x == None:
@@ -256,11 +278,8 @@ class DataManager:
 			return 1
 	#method for deleting an element from the data
 	def delrec(self, index):
-		print(len(self.alldata))
 		self.alldata.pop(index)
-		self.changed = True
-		print(len(self.alldata))
-	
+		self.changed = True	
 	#method for updating an element from the data
 	def updaterec(self):
 		self.changed = True	
@@ -296,16 +315,22 @@ class DataManager:
 	#method which returns the column in which the specified data index should appear
 	def getcolfromindex(self, index):
 		return self.indexheaderref[str(index)]
+	#method for getting keys from schema which dont point to dictionaries
 	def getschema(self):
 		return self.schema
+	#method for recursively generating keys from schema where they dont point to dictionaries
 	def __genkeys(self, dictionary, indexes=[]):
+		#for each item pair at this level
 		for key, val in dictionary.items():
+			#clone the index and append the current key
 			newindex = indexes.copy()
 			newindex.append(key)
+			#check if the key is pointing to a dict, if so recurse, else append the key to the list of keys
 			if isinstance(val, dict):
 				self.__genkeys(dictionary[key], newindex)
 			else:
 				self.schemakeys.append(newindex)
+	#method for returning a list of all schema keys which dont point to dicts
 	def getkeys(self):
 		return self.schemakeys
 #a class manging data input
@@ -339,6 +364,7 @@ class DataInputBox:
 		self.top.grab_set()
 		self.top.lift()
 		self.top.focus_force()
+	#method which clears values from dict1 and replaces them with matching vals from dict2 if they exist
 	def __cleardict1andmergedict2(self, dict1, dict2, index=[]):
 		for key, val in dict1.items():
 			newindex = index.copy()
@@ -417,11 +443,13 @@ class DataInputBox:
 			else:
 				dictionary[index[0]] = val
 				return True
+	#method to close the window
 	def closewindow(self):		
 		#release focus
 		self.top.grab_release()
 		self.top.destroy()
-
+#method which takes a dict and list var and returns the value at the location specified
+#e.g. key = [a,b] dict = {a: {b:1}} would return 1
 def getdictionaryitemwitharraykey(dictionary, key):
 	if dictionary == {}:
 		return None
