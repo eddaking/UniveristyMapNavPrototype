@@ -4,6 +4,7 @@ import json
 import ast
 import re
 import copy
+import functools
 import tkinter as TKI
 import tkinter.messagebox as messagebox
 from tkinter.filedialog import askopenfilename, asksaveasfilename
@@ -40,6 +41,12 @@ class Home:
 		self.add = TKI.Button(frame, text="Add Data", command=lambda: self.__openadd())
 		
 		self.save = TKI.Button(frame, text="Save Data", command=lambda: self.__save())
+
+		self.sortoption = TKI.StringVar()
+		self.sortoption.set(self.datamanager.getheaders()[0])
+		self.sortoptionmenu = TKI.OptionMenu(frame, self.sortoption, *self.datamanager.getkeys())
+
+		self.sort = TKI.Button(frame, text="Sort", command=lambda: self.datamanager.sort(self.sortoption))
 	#method handling click on selectfile - param specifying parent of display.
 	def selectfile(self, master):
 		#load file
@@ -69,6 +76,8 @@ class Home:
 			self.dataframe = dataframe
 			self.add.pack(side='left')
 			self.save.pack(side='left')
+			self.sortoptionmenu.pack(side='left')
+			self.sort.pack(side='left')
 	def addgridrow(self, grid, row, data):
 		i = 0
 		for elem in data:
@@ -151,7 +160,7 @@ class DataRow:
 		if properties:
 			if properties[0]:
 				self.data = properties[1]
-				self.datamanager.updaterec(self.index)
+				self.datamanager.updaterec()
 				self.addgridrow(self.parent, self.row)
 			self.editdialog.closewindow()
 	
@@ -161,6 +170,9 @@ class DataRow:
 			label[0].destroy()
 		self.datamanager.delrec(self.index)
 		self.data = {}
+	def setrow(self, row):
+		for frame in self.labelsandframes:
+			frame[0].grid(row=row)
 	def getdata(self):
 		return self.data
 
@@ -181,10 +193,15 @@ class DataManager:
 		self.__genheaders(self.schema)
 		self.headers.append('Edit?')
 		self.headers.append('Delete?')
+
+		self.schemakeys = []
+		self.__genkeys(self.schema)
+
+		self.sortattr = []
+		self.sorttype = None
 	#method returning a bool specifiying if the data has been changed
 	def is_changed(self):
 		return self.changed
-		
 	#method for loading files
 	def loadfile(self):
 		#filename = 'C:\\Users\\emk1n17\\Documents\\LocalGit\\UniveristyMapNavPrototype\\testNodes.json'
@@ -202,6 +219,12 @@ class DataManager:
 			for feature in readfile['features']:
 				self.alldata.append(DataRow(self, feature, len(self.alldata)))
 		return self.alldata
+	def sort(self, attribute):
+		self.sortattr = attribute
+		newlist = sorted(self.alldata,
+		  key=functools.cmp_to_key(self.__sortcmp))
+		for i, item in enumerate(newlist, 1):
+			item.setrow(i)
 	def savefile(self):
 		#get the current dir of the script and make that the file dialog init loc
 		filename = asksaveasfilename(initialdir=os.path.dirname(os.path.realpath(__file__)))
@@ -216,6 +239,21 @@ class DataManager:
 
 			with open(filename, 'w') as file:
 				json.dump(data, file)
+	def __genkey(self, index):
+		val = getdictionaryitemwitharraykey(index.getdata(), list(ast.literal_eval(self.sortattr.get())))
+	def __sortcmp(self, x, y):
+		x = getdictionaryitemwitharraykey(x.getdata(), list(ast.literal_eval(self.sortattr.get())))
+		y = getdictionaryitemwitharraykey(y.getdata(), list(ast.literal_eval(self.sortattr.get())))
+		if x == y:
+			return 0
+		if x == None:
+			return -1
+		if y == None:
+			return 1
+		if x < y:
+			return -1
+		else:
+			return 1
 	#method for deleting an element from the data
 	def delrec(self, index):
 		print(len(self.alldata))
@@ -224,7 +262,7 @@ class DataManager:
 		print(len(self.alldata))
 	
 	#method for updating an element from the data
-	def updaterec(self, index):
+	def updaterec(self):
 		self.changed = True	
 	#method for adding a new element to the data
 	def addrec(self, row):
@@ -260,7 +298,16 @@ class DataManager:
 		return self.indexheaderref[str(index)]
 	def getschema(self):
 		return self.schema
-
+	def __genkeys(self, dictionary, indexes=[]):
+		for key, val in dictionary.items():
+			newindex = indexes.copy()
+			newindex.append(key)
+			if isinstance(val, dict):
+				self.__genkeys(dictionary[key], newindex)
+			else:
+				self.schemakeys.append(newindex)
+	def getkeys(self):
+		return self.schemakeys
 #a class manging data input
 class DataInputBox:
 	#constructor
@@ -389,6 +436,7 @@ def getdictionaryitemwitharraykey(dictionary, key):
 				return None
 	else:
 		print("SHOULD HAVE GIVEN ME AN ARRAY!!")
+		print(key)
 		return None
 ROOT = TKI.Tk()
 DATAMANGER = DataManager(os.path.dirname(os.path.realpath(__file__))+"\\schema.json")
