@@ -49,7 +49,7 @@ class Home:
 		self.sort = TKI.Button(frame, text="Sort", command=lambda: self.datamanager.sort(self.sortoption))
 
 		test = SelectMethods(datamanager)
-		self.testButton = TKI.Button(frame, text="TEST!", command=lambda:test.findduplicates())
+		self.testButton = TKI.Button(frame, text="TEST!", command=lambda:test.onewaylinks())
 	#method handling click on selectfile - param specifying parent of display.
 	def selectfile(self, master):
 		#load file
@@ -510,11 +510,22 @@ class SelectMethods:
 	def allidref(self, id):
 		print("TODO: implement idref")
 	def onewaylinks(self):
-		data = self.datamanager.getdata()
+		data = self.datamanager.getalldata()
+		onewaylinkarr = []
 		linklist = {}
 		for item in data:
-			linked = item.getdata()['LinkedTo']
-			#if linked:	
+			itemid = item.getdata()['properties']['id']
+			linked = item.getdata()['properties']['LinkedTo']
+			if linked:
+				linklist[itemid] = ast.literal_eval('[' + linked + ']')
+			else:
+				linklist[itemid] = list()
+		for itemid, linkarr in linklist.items():
+			for link in linkarr:
+				if not itemid in linklist[link]:
+					onewaylinkarr.append( (itemid, link))
+		print(onewaylinkarr)
+	#method to find multiple records with the same id
 	def findduplicates(self):
 		data = self.datamanager.getalldata()
 		seenindexes = []
