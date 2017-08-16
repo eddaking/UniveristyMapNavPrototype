@@ -49,7 +49,7 @@ class Home:
 		self.sort = TKI.Button(frame, text="Sort", command=lambda: self.datamanager.sort(self.sortoption))
 
 		test = SelectMethods(datamanager)
-		self.testButton = TKI.Button(frame, text="TEST!", command=lambda:test.onewaylinks())
+		self.testButton = TKI.Button(frame, text="TEST!", command=lambda:test.allidref(231703))
 	#method handling click on selectfile - param specifying parent of display.
 	def selectfile(self, master):
 		#load file
@@ -507,8 +507,21 @@ class DataInputBox:
 class SelectMethods:
 	def __init__(self, datamanager):
 		self.datamanager = datamanager
-	def allidref(self, id):
-		print("TODO: implement idref")
+	
+	def allidref(self, targetid):
+		data = self.datamanager.getalldata()
+		containsid = []
+		for item in data:
+			itemid = item.getdata()['properties']['id']
+			if itemid == targetid:
+				containsid.append(item)
+			linked = item.getdata()['properties']['LinkedTo']
+			if linked:
+				for link in ast.literal_eval('[' + linked + ']'):
+					if link == targetid:
+						containsid.append(item)
+		print(containsid)
+	#method which finds one way links
 	def onewaylinks(self):
 		data = self.datamanager.getalldata()
 		onewaylinkarr = []
@@ -531,14 +544,14 @@ class SelectMethods:
 		seenindexes = []
 		returnvalues = {}
 		for i, item in enumerate(data):
-			id = item.getdata()['properties']['id']
-			if not id in seenindexes:
-				seenindexes.append(id)
+			itemid = item.getdata()['properties']['id']
+			if not itemid in seenindexes:
+				seenindexes.append(itemid)
 			else:
-				if id in returnvalues:
-					returnvalues[id].append(i)
+				if itemid in returnvalues:
+					returnvalues[itemid].append(i)
 				else:
-					returnvalues[id] = [seenindexes.index(id), i]
+					returnvalues[itemid] = [seenindexes.index(itemid), i]
 		print(returnvalues)
 		return returnvalues
 	def findmissingfields(self):
