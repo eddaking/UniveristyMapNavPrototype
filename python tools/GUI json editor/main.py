@@ -47,6 +47,9 @@ class Home:
 		self.sortoptionmenu = TKI.OptionMenu(frame, self.sortoption, *self.datamanager.getkeys())
 
 		self.sort = TKI.Button(frame, text="Sort", command=lambda: self.datamanager.sort(self.sortoption))
+
+		test = SelectMethods(datamanager)
+		self.testButton = TKI.Button(frame, text="TEST!", command=lambda:test.findduplicates())
 	#method handling click on selectfile - param specifying parent of display.
 	def selectfile(self, master):
 		#load file
@@ -78,6 +81,7 @@ class Home:
 			self.save.pack(side='left')
 			self.sortoptionmenu.pack(side='left')
 			self.sort.pack(side='left')
+			self.testButton.pack(side='left')
 	def addgridrow(self, grid, row, data):
 		i = 0
 		for elem in data:
@@ -180,8 +184,13 @@ class DataRow:
 		self.data = {}
 	#change the row on which this data is drawn to the specified one
 	def setrow(self, row):
+		self.row = row
 		for frame in self.labelsandframes:
-			frame[0].grid(row=row)
+			if isinstance(row, int):
+				frame[0].grid(row=row)
+			else:
+				frame[0].grid_remove()
+		
 	#method for returning the data stored in the row as a dict
 	def getdata(self):
 		return self.data
@@ -230,7 +239,15 @@ class DataManager:
 		return self.alldata
 	#method for sorting data by a specified attribute
 	def sort(self, attribute):
-		self.sortattr = attribute
+		#retrieve the index from the selected optionmenu option
+		#needs to be evaled from string to tuple, then parsed into a list
+		userinput = attribute.get()
+		compiledre = re.compile('\(.+\)$')
+		res = compiledre.match(userinput)
+		if res:
+			self.sortattr = list(ast.literal_eval(userinput))
+		else:
+			self.sortattr = [userinput]
 		#get a copy of the data sorted using the custom comparison specifed
 		newlist = sorted(self.alldata, key=functools.cmp_to_key(self.__sortcmp))
 		#for each data item, update its row
@@ -259,23 +276,44 @@ class DataManager:
 			self.changed = False
 	#method for custom comparisons whilst sorting data
 	def __sortcmp(self, x, y):
-		#retrieve the index from the selected optionmenu option
-		#needs to be evaled from string to tuple, then parsed into a list
-		index = list(ast.literal_eval(self.sortattr.get()))
 		#get the two values in the data using an array as index
-		x = getdictionaryitemwitharraykey(x.getdata(), index)
-		y = getdictionaryitemwitharraykey(y.getdata(), index)
+		x = getdictionaryitemwitharraykey(x.getdata(), self.sortattr)
+		y = getdictionaryitemwitharraykey(y.getdata(), self.sortattr)
 		#basically assume None is -inf in all comparisons and return according values
-		if x == y:
+		if x == y == None:
 			return 0
 		if x == None:
 			return -1
 		if y == None:
 			return 1
+		if type(x) != type(y):
+			newxy = self.__derterminenonstrtype(x, y)
+			x = newxy[0]
+			y = newxy[1]
 		if x < y:
 			return -1
 		else:
 			return 1
+	#method which takes 2 args, one of str type and the other of type int or list
+	#returns an array of two ints or lists, with the str param parsed to the type of the other
+	def __derterminenonstrtype(self, x, y):
+		if isinstance(x, str):
+			if isinstance(y, int):
+				return (int(x), y)
+			elif isinstance(y, list):
+				return (list(x), y)
+			else:
+				print("Error: Unrecognised Type")
+		elif isinstance(y, str):
+			if isinstance(x, int):
+				return (x, int(y))
+			elif isinstance(x, list):
+				return (x, list(y))
+			else:
+				print("Unrecognised Type")
+		else:
+			print("Error: neither arg is str type")
+		return None
 	#method for deleting an element from the data
 	def delrec(self, index):
 		self.alldata.pop(index)
@@ -333,6 +371,9 @@ class DataManager:
 	#method for returning a list of all schema keys which dont point to dicts
 	def getkeys(self):
 		return self.schemakeys
+	#method fro getting list of all rows
+	def getalldata(self):
+		return self.alldata
 #a class manging data input
 class DataInputBox:
 	#constructor
@@ -410,7 +451,7 @@ class DataInputBox:
 		updated = False
 		for entry in self.entries:
 			if self.__checkvalid(entry[0], entry[1].get()):
-				if self.__compareandsetinputs(datanew, entry[0].copy(), entry[1].get()):
+				if self.__compareandsetinputs(datanew, entry[0].copy(), entry[1].get(), entry[0].copy()):
 					updated = True
 			else:
 				failedregex = getdictionaryitemwitharraykey(self.schema, entry[0])
@@ -431,27 +472,71 @@ class DataInputBox:
 	#method which takes a dictionary, index and value, 
 	#if the value at the index is the same as the passed value, return true, 
 	#else update the value in the dictionary and return false
-	def __compareandsetinputs(self, dictionary, index, val):
+	def __compareandsetinputs(self, dictionary, index, val, originalindex):
 		if len(index) > 1:
 			top = index.pop(0)
-			return self.__compareandsetinputs(dictionary[top], index, val)
+			return self.__compareandsetinputs(dictionary[top], index, val, originalindex)
 		else:
-			if not isinstance(dictionary[index[0]], str):
+			#if editing, check current property's type, if not string, then eval input
+			schemaitem = getdictionaryitemwitharraykey(self.schema, originalindex)
+			if (not isinstance(dictionary[index[0]], str)) or self.__matchregexintandlist(schemaitem):
 				val = ast.literal_eval(val)
 			if dictionary[index[0]] == val:
 				return False
 			else:
 				dictionary[index[0]] = val
 				return True
+	#method which returns true if the regex param matches a generic regex for list or int
+	def __matchregexintandlist(self, regex):
+		#match generic array
+		compiledre = re.compile('\\\\\\[.+(\\\\\\,.+)*\\\\\\]\\$$')
+		res = compiledre.match(regex)
+		output = bool(res)
+		if output:
+			return output
+		#match \\d+$ (\\ is b/c encoded for jsonreadin)
+		compiledre = re.compile('\\\\d\\+\\$$')
+		res = compiledre.match(regex)
+		return bool(res)
 	#method to close the window
 	def closewindow(self):		
 		#release focus
 		self.top.grab_release()
 		self.top.destroy()
+#class holding all select methods
+class SelectMethods:
+	def __init__(self, datamanager):
+		self.datamanager = datamanager
+	def allidref(self, id):
+		print("TODO: implement idref")
+	def onewaylinks(self):
+		data = self.datamanager.getdata()
+		linklist = {}
+		for item in data:
+			linked = item.getdata()['LinkedTo']
+			#if linked:	
+	def findduplicates(self):
+		data = self.datamanager.getalldata()
+		seenindexes = []
+		returnvalues = {}
+		for i, item in enumerate(data):
+			id = item.getdata()['properties']['id']
+			if not id in seenindexes:
+				seenindexes.append(id)
+			else:
+				if id in returnvalues:
+					returnvalues[id].append(i)
+				else:
+					returnvalues[id] = [seenindexes.index(id), i]
+		print(returnvalues)
+		return returnvalues
+	def findmissingfields(self):
+		print("TODO: find missing fields")
 #method which takes a dict and list var and returns the value at the location specified
 #e.g. key = [a,b] dict = {a: {b:1}} would return 1
 def getdictionaryitemwitharraykey(dictionary, key):
 	if dictionary == {}:
+		print("getdictfromindexarr was given an empty dict")
 		return None
 	if isinstance(key, list):
 		if len(key) > 1:
@@ -464,7 +549,6 @@ def getdictionaryitemwitharraykey(dictionary, key):
 				return None
 	else:
 		print("SHOULD HAVE GIVEN ME AN ARRAY!!")
-		print(key)
 		return None
 ROOT = TKI.Tk()
 DATAMANGER = DataManager(os.path.dirname(os.path.realpath(__file__))+"\\schema.json")
