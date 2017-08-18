@@ -257,6 +257,9 @@ class DataManager:
 		if filename:
 			with open(filename) as file:
 				readfile = json.load(file)
+			#check if file contains 'features' property
+			if not 'features' in readfile:
+				return None
 			#retain header data
 			for header in readfile:
 				if header != 'features':
