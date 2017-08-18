@@ -252,7 +252,9 @@ class DataManager:
 	#method for loading files
 	def loadfile(self):
 		#get the current dir of the script and make that the file dialog init loc
-		filename = askopenfilename(initialdir=os.path.dirname(os.path.realpath(__file__)))
+		validfiletype = [('JSON', '*.json'), ('GEOJSON', '*.geojson')]
+		initdir = os.path.dirname(os.path.realpath(__file__))
+		filename = askopenfilename(initialdir=initdir, filetypes=validfiletype)
 		#if file selected - load it
 		if filename:
 			with open(filename) as file:
@@ -287,7 +289,9 @@ class DataManager:
 		if not self.changed:
 			return
 		#get the current dir of the script and make that the file dialog init loc
-		filename = asksaveasfilename(initialdir=os.path.dirname(os.path.realpath(__file__)))
+		validfiletype = [('JSON', '*.json'), ('GEOJSON', '*.geojson')]
+		initdir = os.path.dirname(os.path.realpath(__file__))
+		filename = asksaveasfilename(initialdir=initdir, filetypes=validfiletype)
 		#if file selected - load it
 		if filename:
 			#get headers
