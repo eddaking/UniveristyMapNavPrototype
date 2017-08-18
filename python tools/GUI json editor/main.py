@@ -7,18 +7,12 @@ import copy
 import functools
 import tkinter as TKI
 import tkinter.messagebox as messagebox
+import tkinter.simpledialog as tkSimpleDialog
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 from scrframe import TwoDimScrolledFrame, VerticalScrolledFrame
 
 #class for main display
 class Home:
-	#TODO: unmute C0111 in pylint
-	"""DocString here
-	Desc
-	Note
-	Args:
-	Attributes
-	"""
 	#constructor
 	def __init__(self, master, datamanager):
 		
@@ -39,15 +33,16 @@ class Home:
 		#create a frame for holding the other buttons
 		self.frame2 = frame2 = TKI.Frame(master)
 
-		TKI.Button(frame2, text="Add Data", command=lambda: self.__openadd()).pack(side='left')
+		TKI.Button(frame2, text="Add Data", command=self.__openadd).pack(side='left')
 		
-		TKI.Button(frame2, text="Save Data", command=lambda: self.__save()).pack(side='left')
+		TKI.Button(frame2, text="Save Data", command=self.__save).pack(side='left')
 
 		self.sortoption = TKI.StringVar()
 		self.sortoption.set(self.datamanager.getkeys()[0])
 		TKI.OptionMenu(frame2, self.sortoption, *self.datamanager.getkeys()).pack(side='left')
-
-		TKI.Button(frame2, text="Sort", command=lambda: self.datamanager.sort(self.sortoption)).pack(side='left')
+		def sortbtnevent():
+			self.datamanager.sort(self.sortoption.get())
+		TKI.Button(frame2, text="Sort", command=sortbtnevent).pack(side='left')
 
 		filterobj = FilterMethods(datamanager)
 		filteroptions = filterobj.getmethodnames()
@@ -61,14 +56,11 @@ class Home:
 		filteroption.set(filteroptions[0])
 		TKI.OptionMenu(filterframe, filteroption, *filteroptions).pack(side='left')
 
-		
 		def optionchanged(*args):
 			filtermethods[filteroptions.index(filteroption.get())]()
 		#'w' param calls callback on writes to variable
 		filteroption.trace("w", optionchanged)
-
-		TKI.Button(frame2, text="TEST!", command=lambda: filterobj.getinvalidentries()).pack(side='left')
-		
+				
 		#create button for quitting the application
 		TKI.Button(frame2, text="QUIT", fg="red", command=frame2.quit).pack(side='left')
 	#method handling click on selectfile - param specifying parent of display.
@@ -129,6 +121,7 @@ class DataRow:
 		self.parent = None
 		self.editdialog = None
 		self.labelsandframes = []
+		self.hidden = False
 	def __gettextfromdata(self, dictioanry, index=[]):
 		data = []
 		for key, val in dictioanry.items():
@@ -179,7 +172,10 @@ class DataRow:
 				self.data = properties[1]
 				#set updated flag in datamanager
 				self.datamanager.updaterec()
-				#TODO: delete  old frames
+				#delete  old frames
+				for frame in self.labelsandframes:
+					frame[0].destroy()
+				self.labelsandframes = []
 				#draw a new grid row in the same place as the last one with the new data
 				self.addgridrow(self.parent, self.row)
 			self.editdialog.closewindow()	
@@ -192,11 +188,24 @@ class DataRow:
 	#change the row on which this data is drawn to the specified one
 	def setrow(self, row):
 		self.row = row
-		for frame in self.labelsandframes:
-			if isinstance(row, int):
-				frame[0].grid(row=row)
-			else:
+		if not self.hidden:
+			for frame in self.labelsandframes:
+				if isinstance(row, int):
+					frame[0].grid(row=row)
+				else:
+					frame[0].grid_remove()
+	#method which hides the row unless it is aready hidden
+	def hiderow(self):
+		if not self.hidden:
+			self.hidden = True
+			for frame in self.labelsandframes:
 				frame[0].grid_remove()
+	#method which unhides the row unless it is already showing
+	def showrow(self):
+		if self.hidden:
+			self.hidden = False
+			for frame in self.labelsandframes:
+				frame[0].grid(row=self.row)
 	#method for returning the data stored in the row as a dict
 	def getdata(self):
 		return self.data
@@ -204,7 +213,6 @@ class Schema:
 	def __init__(self, fileloc):
 		self.schema = self.__loadschema(fileloc)
 		self.flatkeys = self.__genflatkeys()
-		print(self.flatkeys)
 	#method to load the schema from file into a dict
 	def __loadschema(self, fileloc):
 		if fileloc:
@@ -227,7 +235,6 @@ class Schema:
 			return indexlist
 		else:
 			return list(self.flatkeys.values())
-	#method for 
 	
 #class for handling data import, export and control
 class DataManager:	
@@ -236,19 +243,8 @@ class DataManager:
 		self.schemaloc = schemaLoc
 		self.changed = False
 		self.alldata = []
-		self.indexheaderref = {}
-
-		self.schema = Schema(schemaLoc)
-		
+		self.schema = Schema(schemaLoc)		
 		self.fileheaders = {}
-
-		self.headers = []
-		self.headers.append('Edit?')
-		self.headers.append('Delete?')
-
-		self.schemakeys = []
-		self.__genkeys(self.schema.getschema())
-
 		self.sortattr = []
 	#method returning a bool specifiying if the data has been changed
 	def is_changed(self):
@@ -270,10 +266,9 @@ class DataManager:
 				self.alldata.append(DataRow(self, feature, len(self.alldata)))
 		return self.alldata
 	#method for sorting data by a specified attribute
-	def sort(self, attribute):
+	def sort(self, userinput):
 		#retrieve the index from the selected optionmenu option
 		#needs to be evaled from string to tuple, then parsed into a list
-		userinput = attribute.get()
 		if regexcheck(userinput, '\\(.+\\)$'):
 			self.sortattr = list(ast.literal_eval(userinput))
 		else:
@@ -340,19 +335,6 @@ class DataManager:
 	#method fro getting list of all rows
 	def getalldata(self):
 		return self.alldata
-	#TODO: Move to Schema class
-	#method for recursively generating keys from schema where they dont point to dictionaries
-	def __genkeys(self, dictionary, indexes=[]):
-		#for each item pair at this level
-		for key, val in dictionary.items():
-			#clone the index and append the current key
-			newindex = indexes.copy()
-			newindex.append(key)
-			#check if the key is pointing to a dict, if so recurse, else append the key to the list of keys
-			if isinstance(val, dict):
-				self.__genkeys(dictionary[key], newindex)
-			else:
-				self.schemakeys.append(newindex)
 	#method for returning a list of all schema keys which dont point to dicts
 	def getkeys(self):
 		return self.schema.getkeys(True)
@@ -366,6 +348,17 @@ class DataManager:
 		fields.append('Edit?')
 		fields.append('Delete?')
 		return fields
+	#method which hides all rows except the ones specified
+	def showrowsonly(self, rows):
+		if not rows is None:
+			for row in self.alldata:
+				if row in rows:
+					row.showrow()
+				else:
+					row.hiderow()
+		else:
+			for row in self.alldata:
+				row.showrow()
 #a class manging data input
 class DataInputBox:
 	#constructor
@@ -489,61 +482,46 @@ class DataInputBox:
 class FilterMethods:
 	def __init__(self, datamanager):
 		self.datamanager = datamanager
-		self.methodnames = ["None", "ID ref", "Invalid Entires", "Oneway Links"]
-		self.methods = [None, self.allidref, self.getduplicates, self.getinvalidentries, self.getonewaylinks]
+		self.methodnames = ["None", "ID ref", "Duplicates", "Invalid Entires", "Oneway Links"]
+		self.methods = [self.resetfilters, self.allidref, self.getduplicates, self.getinvalidentries, self.getonewaylinks]
 		#method which returns string title for each filter
 	def getmethodnames(self):
 		return self.methodnames
 	def getmethods(self):
 		return self.methods
+	def resetfilters(self):
+		self.datamanager.showrowsonly(None)
 	#method which finds all records with the specifed id in the id or linkedto fields
-	def allidref(self, targetid):
-		data = self.datamanager.getalldata()
-		containsid = []
-		for item in data:
-			itemid = item.getdata()['properties']['id']
-			if itemid == targetid:
-				containsid.append(item)
-			linked = item.getdata()['properties']['LinkedTo']
-			if linked:
-				for link in ast.literal_eval('[' + linked + ']'):
-					if link == targetid:
-						containsid.append(item)
-		print(containsid)
-	#method which finds one way links
-	def getonewaylinks(self):
-		data = self.datamanager.getalldata()
-		onewaylinkarr = []
-		linklist = {}
-		for item in data:
-			itemid = item.getdata()['properties']['id']
-			linked = item.getdata()['properties']['LinkedTo']
-			if linked:
-				linklist[itemid] = ast.literal_eval('[' + linked + ']')
-			else:
-				linklist[itemid] = list()
-		for itemid, linkarr in linklist.items():
-			for link in linkarr:
-				if not itemid in linklist[link]:
-					onewaylinkarr.append((itemid, link))
-		print(onewaylinkarr)
+	def allidref(self):
+		targetid = tkSimpleDialog.askinteger("Select ID", "ID:")
+		if targetid:
+			data = self.datamanager.getalldata()
+			containsid = []
+			for item in data:
+				itemid = item.getdata()['properties']['id']
+				if itemid == targetid:
+					containsid.append(item)
+				linked = item.getdata()['properties']['LinkedTo']
+				if linked:
+					for link in ast.literal_eval('[' + linked + ']'):
+						if link == targetid:
+							containsid.append(item)
+			self.datamanager.showrowsonly(containsid)
 	#method to find multiple records with the same id
 	def getduplicates(self):
 		data = self.datamanager.getalldata()
-		seenindexes = []
-		returnvalues = {}
-		for i, item in enumerate(data):
+		seenindexes = {}
+		returnvalues = []
+		for item in data:
 			itemid = item.getdata()['properties']['id']
-			if not itemid in seenindexes:
-				seenindexes.append(itemid)
+			if not itemid in seenindexes.keys():
+				seenindexes[itemid] = item
 			else:
-				if itemid in returnvalues:
-					returnvalues[itemid].append(i)
-				else:
-					returnvalues[itemid] = [seenindexes.index(itemid), i]
-		print(returnvalues)
-		return returnvalues
-	#method which returns a list of DataRow objects which fail to pass regex checks or have missing fields
+				returnvalues.append(item)
+				returnvalues.append(seenindexes[itemid])
+		self.datamanager.sort("('properties', 'id')")
+		self.datamanager.showrowsonly(returnvalues)
+	#method which returns a list of DataRow objs which fail to pass regex checks or have missing fields
 	def getinvalidentries(self):
 		data = self.datamanager.getalldata()
 		schema = self.datamanager.getschema()
@@ -559,8 +537,24 @@ class FilterMethods:
 				else:
 					brokenrecords.append(item)
 					break
-		for record in brokenrecords:
-			print(record.getdata()['properties'])
+		self.datamanager.showrowsonly(brokenrecords)
+	#method which finds one way links
+	def getonewaylinks(self):
+		data = self.datamanager.getalldata()
+		onewaylinkarr = []
+		linklist = {}
+		for item in data:
+			itemid = item.getdata()['properties']['id']
+			linked = item.getdata()['properties']['LinkedTo']
+			if linked:
+				linklist[itemid] = [ast.literal_eval('[' + linked + ']'), item]
+			else:
+				linklist[itemid] = [list(), item]
+		for itemid, linkarr in linklist.items():
+			for link in linkarr[0]:
+				if not itemid in linklist[link][0]:
+					onewaylinkarr.append(linkarr[1])
+		self.datamanager.showrowsonly(onewaylinkarr)
 #method which takes a dict and list var and returns the value at the location specified
 #e.g. key = [a,b] dict = {a: {b:1}} would return 1
 def getdictitemfromarrkey(dictionary, key):
