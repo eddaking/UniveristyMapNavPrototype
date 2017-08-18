@@ -49,8 +49,25 @@ class Home:
 
 		TKI.Button(frame2, text="Sort", command=lambda: self.datamanager.sort(self.sortoption)).pack(side='left')
 
-		test = SelectMethods(datamanager)
-		TKI.Button(frame2, text="TEST!", command=lambda: test.findmissingfields()).pack(side='left')
+		filterobj = FilterMethods(datamanager)
+		filteroptions = filterobj.getmethodnames()
+		filtermethods = filterobj.getmethods()
+
+		filterframe = TKI.Frame(frame2)
+		filterframe.pack(side='left')
+		TKI.Label(filterframe, text="Filters").pack(side="left")
+
+		filteroption = TKI.StringVar()
+		filteroption.set(filteroptions[0])
+		TKI.OptionMenu(filterframe, filteroption, *filteroptions).pack(side='left')
+
+		
+		def optionchanged(*args):
+			filtermethods[filteroptions.index(filteroption.get())]()
+		#'w' param calls callback on writes to variable
+		filteroption.trace("w", optionchanged)
+
+		TKI.Button(frame2, text="TEST!", command=lambda: filterobj.getinvalidentries()).pack(side='left')
 		
 		#create button for quitting the application
 		TKI.Button(frame2, text="QUIT", fg="red", command=frame2.quit).pack(side='left')
@@ -469,9 +486,16 @@ class DataInputBox:
 		self.top.grab_release()
 		self.top.destroy()
 #class holding all select methods
-class SelectMethods:
+class FilterMethods:
 	def __init__(self, datamanager):
 		self.datamanager = datamanager
+		self.methodnames = ["None", "ID ref", "Invalid Entires", "Oneway Links"]
+		self.methods = [None, self.allidref, self.getduplicates, self.getinvalidentries, self.getonewaylinks]
+		#method which returns string title for each filter
+	def getmethodnames(self):
+		return self.methodnames
+	def getmethods(self):
+		return self.methods
 	#method which finds all records with the specifed id in the id or linkedto fields
 	def allidref(self, targetid):
 		data = self.datamanager.getalldata()
@@ -487,7 +511,7 @@ class SelectMethods:
 						containsid.append(item)
 		print(containsid)
 	#method which finds one way links
-	def onewaylinks(self):
+	def getonewaylinks(self):
 		data = self.datamanager.getalldata()
 		onewaylinkarr = []
 		linklist = {}
@@ -504,7 +528,7 @@ class SelectMethods:
 					onewaylinkarr.append((itemid, link))
 		print(onewaylinkarr)
 	#method to find multiple records with the same id
-	def findduplicates(self):
+	def getduplicates(self):
 		data = self.datamanager.getalldata()
 		seenindexes = []
 		returnvalues = {}
@@ -520,7 +544,7 @@ class SelectMethods:
 		print(returnvalues)
 		return returnvalues
 	#method which returns a list of DataRow objects which fail to pass regex checks or have missing fields
-	def findmissingfields(self):
+	def getinvalidentries(self):
 		data = self.datamanager.getalldata()
 		schema = self.datamanager.getschema()
 		schemakeys = self.datamanager.getkeys()
