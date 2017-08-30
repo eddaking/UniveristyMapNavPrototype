@@ -14,7 +14,6 @@ class VerticalScrolledFrame(Frame):
     * Use the 'interior' attribute to place widgets inside the scrollable frame
     * Construct and pack/place/grid normally
     * This frame only allows vertical scrolling
-
     """
     def __init__(self, parent, *args, **kw):
         Frame.__init__(self, parent, *args, **kw)            
@@ -59,8 +58,8 @@ class HorizontalScrolledFrame(Frame):
     * Use the 'interior' attribute to place widgets inside the scrollable frame
     * Construct and pack/place/grid normally
     * This frame only allows horizontal scrolling
-
     """
+
     def __init__(self, parent, *args, **kw):
         Frame.__init__(self, parent, *args, **kw)
 
@@ -141,7 +140,7 @@ class TwoDimScrolledFrame(Frame):
                 self.lastmousepos = []
             else:
                 self.lastmousepos = [int(event.x), int(event.y)]
-        def _on_mouse2release(event)    :
+        def _on_mouse2release(event):
             self.lastmousepos = []
         canvas.bind_all("<B2-Motion>", _on_mouse2drag)
         canvas.bind_all("<ButtonRelease-2>", _on_mouse2release)
