@@ -18,12 +18,12 @@ function drawLine(points, layer, opts){
 	layer.addData(data);
 }
 
+//method which creates a polgon in the shape of a line with the points specified
 function genPointsForLinePoly(points){
 	originalLen = points.length;
 	for (i = originalLen - 2; i > 0;i = i - 1){
 		points.push(points[i]);
 	}
-	
 	return points;
 }
 
@@ -94,7 +94,7 @@ function makeMap(){
 //get data for the indoorLayer
 function makeIndoorLayer(){
 	$.getJSON("B23&25RoomsAll.json", function(roomsJSON) {
-		GJSONBuilding = roomsJSON;
+		GJSONBuilding = roomsJSON['features'];
 		indoorLayer = new L.Indoor(GJSONBuilding, {
 			getLevel: function(feature) { 
 				if (feature.properties.length === 0){
@@ -309,6 +309,7 @@ function getLevel(node){
 		return -1;
 	}
 }
+
 //method for calculating the nodes which can be navigated to from the top node in the index array.
 //removes top node from index and adds new nodes to it
 function doOneNode(index, dest){
