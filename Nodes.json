@@ -1,0 +1,2 @@
+[{"geometry": {"type": "Point", "coordinates": [-1.39615, 50.93691]}, "type": "Feature", "properties": {"Level": -1, "id": 1, "Label": "Univeristy Cresent Crossing", "RoomRef": null}},
+{"geometry": {"type": "Point", "coordinates": [-1.39627, 50.936696]}, "type": "Feature", "properties": {"RoomRef": null, "Level": -1, "id": 2, "Label": "Univeristy Road Traffic Lights Nightingale-EEE"}}]
