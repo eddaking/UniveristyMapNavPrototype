@@ -46,7 +46,7 @@ function genPointsForLinePoly(points){
 }
 
 //function for initalising map based variables
-function makeMap(){
+function makeMap(incOnEachFunc){
 	//create a new map, centre on soton, using soton maps tiles
 	mymap = L.map('map').setView([50.93564, -1.39614], 17);
 	//http://tiles.maps.southampton.ac.uk/aer/{z}/{x}/{y}.png
@@ -75,46 +75,80 @@ function makeMap(){
 			};
 	}}).addTo(mymap);
 	
-	makeIndoorLayer();
+	makeIndoorLayer(incOnEachFunc);
 }
 
 //get data for the indoorLayer
-function makeIndoorLayer(){
+function makeIndoorLayer(incOnEachFunc){
 	$.getJSON("B37RoomsAll.json", function(roomsJSON) {
 		GJSONBuilding = roomsJSON['features'];
-		indoorLayer = new L.Indoor(GJSONBuilding, {
-			getLevel: function(feature) { 
-				if (feature.properties.length === 0){
-					return null;
-				}
-				return feature.properties.Level;
-			},
-			onEachFeature: function(feature, layer) {
-				layer.bindPopup(JSON.stringify(feature.properties) + "<br>" + '<input id="DrawRoute" type="button" value="Set Start" onclick=\'setNavPoint(' + JSON.stringify(feature.properties) + ',true)\' /><br><input id="DrawRoute" type="button" value="Set End" onclick=\'setNavPoint(' + JSON.stringify(feature.properties) + ',false)\' />');
-			},
-			//set the style for the items on the layer
-			style: function(feature) {
-				var fill = 'white';
-				if (feature.properties.type === 'Way') {
-					fill = '#169EC6';
-				} else if ((feature.properties.type === 'Stairs') || (feature.properties.type === 'Lift') ) {
-					fill = '#0A485B';
-				} else if (feature.properties.type === 'Route')  {
-					return {
-						fillColor: 'white',
-						weight: 5,
-						color: 'red',
-						opacity: 1,
-						fillOpacity: 1
+		if(incOnEachFunc){
+			indoorLayer = new L.Indoor(GJSONBuilding, {
+				getLevel: function(feature) { 
+					if (feature.properties.length === 0){
+						return null;
 					}
-				}
-				return {
-					fillColor: fill,
-					weight: 1,
-					color: '#666',
-					fillOpacity: 1
-				};
-		}});
+					return feature.properties.Level;
+				},
+				onEachFeature: function(feature, layer) {
+					layer.bindPopup(JSON.stringify(feature.properties) + "<br>" + '<input id="DrawRoute" type="button" value="Set Start" onclick=\'setNavPoint(' + JSON.stringify(feature.properties) + ',true)\' /><br><input id="DrawRoute" type="button" value="Set End" onclick=\'setNavPoint(' + JSON.stringify(feature.properties) + ',false)\' />');
+				},
+				//set the style for the items on the layer
+				style: function(feature) {
+					var fill = 'white';
+					if (feature.properties.type === 'Way') {
+						fill = '#169EC6';
+					} else if ((feature.properties.type === 'Stairs') || (feature.properties.type === 'Lift') ) {
+						fill = '#0A485B';
+					} else if (feature.properties.type === 'Route')  {
+						return {
+							fillColor: 'white',
+							weight: 5,
+							color: 'red',
+							opacity: 1,
+							fillOpacity: 1
+						}
+					}
+					return {
+						fillColor: fill,
+						weight: 1,
+						color: '#666',
+						fillOpacity: 1
+					};
+			}});
+		}else{
+			indoorLayer = new L.Indoor(GJSONBuilding, {
+				getLevel: function(feature) {
+					if (feature.properties.length === 0){
+						return null;
+					}
+					return feature.properties.Level;
+				},
+				//set the style for the items on the layer
+				style: function(feature) {
+					var fill = 'white';
+					if (feature.properties.type === 'Way') {
+						fill = '#169EC6';
+					} else if ((feature.properties.type === 'Stairs') || (feature.properties.type === 'Lift') ) {
+						fill = '#0A485B';
+					} else if (feature.properties.type === 'Route')  {
+						return {
+							fillColor: 'white',
+							weight: 5,
+							color: 'red',
+							opacity: 1,
+							fillOpacity: 1
+						}
+					}
+					return {
+						fillColor: fill,
+						weight: 1,
+						color: '#666',
+						fillOpacity: 1
+					};
+			}});
+		}
+		
 		//set the current level to show
 		indoorLayer.setLevel("1");
 		
