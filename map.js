@@ -174,12 +174,13 @@ function clearLines(){
 		}
 	}
 }
-function addMarkerToMap(data){
-	markerLayer.addData(data);
-}
-function addIndoorMarkerLayer(newLayer, key){
-	indoorMarkerLayers[key] = newLayer;
-	indoorLayer._layers[key].addLayer(newLayer);
+function addMarkers(markers, key){
+	if(key != -1){
+		indoorMarkerLayers[key] = markers;
+		indoorLayer._layers[key].addLayer(markers);
+	}else{
+		markerLayer.addData(markers);
+	}
 }
 
 //thing thing thing
