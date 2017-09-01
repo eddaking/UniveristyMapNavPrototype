@@ -139,20 +139,12 @@ function calcRoute(){
 			if (newNodeLev == currLev){
 				currLine.push(GJSONOrdered[point].geometry.coordinates);
 			}else{
-				if(currLev == -1){
-					drawLine(currLine,linesLayer, {'Level': currLev});
-				}else{
-					drawLine(currLine,indoorLayer, {'Level': currLev});
-				}
+				drawLine(currLine,currLev, {'Level': currLev});
 				currLev = newNodeLev;
 				currLine = [GJSONOrdered[point].geometry.coordinates];
 			}
 		});
-		if(currLev == -1){
-			drawLine(currLine,linesLayer, {'Level': currLev});
-		}else{
-			drawLine(currLine,indoorLayer, {'Level': currLev});
-		}
+		drawLine(currLine, currLev, {'Level': currLev});
 	}
 }
 
