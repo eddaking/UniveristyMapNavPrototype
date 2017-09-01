@@ -6,8 +6,6 @@ var nodes = []
 var edges = []
 var sortedNodes = []
 
-var outdoorLevID = -1
-
 function init(){
 	loadFiles();
 	sortNodes();
@@ -89,15 +87,14 @@ function addNode(newNode){
 
 //draw all edges on the map
 function drawAllEdges(){
-	for(var index in edges){
-		edge = edges[index];
+	edges.forEach(function(edge){
 		edgeStartLev = sortedNodes[edge.nodes[0]].properties.Level;
-		if(edgeStartLev != outdoorLevID){
-			drawLine([sortedNodes[edge.nodes[0]], sortedNodes[edge.nodes[1]]], indoorLayer, {'Level': edgeStartLev});
-		}else{
-			drawLine([sortedNodes[edge.nodes[0]].geometry.coordinates, sortedNodes[edge.nodes[1]].geometry.coordinates], linesLayer, {'Level': edgeStartLev});
-		}
-	}
+		drawEdge(edge, edgeStartLev);
+	});
+}
+
+function drawEdge(edge, edgeStartLev){
+	drawLine([sortedNodes[edge.nodes[0]].geometry.coordinates, sortedNodes[edge.nodes[1]].geometry.coordinates], edgeStartLev);
 }
 
 var selectedNode = null;
@@ -109,8 +106,7 @@ function main(marker){
 	if (activePopup) {
 		console.log("Popup Active");
 		return;
-	}
-	
+	}	
 	if(!selectedNode && !Array.isArray(marker)){
 		console.log("Node selected");
 		selectedNode = marker;
@@ -150,10 +146,9 @@ function createNode(latlng, callback){
 			"properties": 
 				{"Level": level, "id": id, "Label": label, "RoomRef": roomRef}
 			};
-			console.log(newNode);
 			nodes.push(newNode);
 			sortedNodes[id] = newNode;
-			if(typeof callback === 'function' && callback()){
+			if(typeof callback === 'function'){
 				callback(newNode);
 			}
 			addNode(newNode);
@@ -190,21 +185,23 @@ function closeActivePopup(){
 	activePopup = null;
 }
 
-function createEdge(nodes){
-	if (isDuplicateEdge(nodes)){
+function createEdge(edgeNodes){
+	if (isDuplicateEdge(edgeNodes)){
 		console.log("DUPLICATE EDGE!");
 	} else {
-		console.log("TODO: Create Edge");
+		newEdge = {"nodes": [edgeNodes[0].properties.id, edgeNodes[1].properties.id], "weight": 1, "otherProps": {}}
+		edges.push(newEdge);
+		drawEdge(newEdge, edgeNodes[0].properties.Level)
 	}
 }
 
 //method which checks if the edge attempting to create already exists
-function isDuplicateEdge(nodes){
+function isDuplicateEdge(edgeNodes){
 	duplicate = false;
-	if (nodes[1] != null){
+	if (edgeNodes[1] != null){
 		edges.forEach( function (elem) {
-			node1index = elem.nodes.indexOf(nodes[0].properties.id);
-			node2index = elem.nodes.indexOf(nodes[1].properties.id);
+			node1index = elem.nodes.indexOf(edgeNodes[0].properties.id);
+			node2index = elem.nodes.indexOf(edgeNodes[1].properties.id);
 			if((node1index != -1) && (node2index != -1)){
 				duplicate = true;
 			}
