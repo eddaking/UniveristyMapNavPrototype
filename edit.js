@@ -15,6 +15,7 @@ function init(){
 		latlang = event.latlng;
 		main([latlang.lng, latlang.lat]);
 	});
+	mymap.options.closePopupOnClick = false;
 	markerLayer.options.onEachFeature = function(feature, layer) {
 		layer.on('click', function(event){
 			main(feature);
@@ -67,15 +68,23 @@ function drawAllNodes(){
 	}
 	
 	for(var level in levels){
-		data = levels[level];
-		if(level != -1){
-			//for indoor layers create a new layer and add it to the correct indoor level layer
-			data = new L.geoJson(data,{
-				onEachFeature: main(data)
-			});
-		}
-		addMarkers(data, level);
+		addMarkers(levels[level], level, 
+			function(feature, layer) {
+				layer.on('click', function(event){
+				main(feature);
+		});
+	});
 	}
+}
+
+function addNode(newNode){
+	level = newNode.properties.Level;
+	addMarkers(newNode, level, 
+			function(feature, layer) {
+				layer.on('click', function(event){
+				main(feature);
+			});
+		});
 }
 
 //draw all edges on the map
@@ -92,14 +101,21 @@ function drawAllEdges(){
 }
 
 var selectedNode = null;
+var activePopup = null
 
 //main loop
 function main(marker){
+	
+	if (activePopup) {
+		console.log("Popup Active");
+		return;
+	}
+	
 	if(!selectedNode && !Array.isArray(marker)){
 		console.log("Node selected");
 		selectedNode = marker;
 	} else if (!selectedNode && Array.isArray(marker)){
-		createNode();
+		createNode(marker, null);
 	} else if (selectedNode && !Array.isArray(marker)){
 		if(selectedNode == marker){
 			console.log("Node deselected");
@@ -109,14 +125,69 @@ function main(marker){
 			selectedNode = null;
 		}
 	} else if (selectedNode && Array.isArray(marker)){
-		createNode();
-		createEdge([selectedNode, null]);
-		selectedNode = null;
+		createNode(marker, function(newNode){
+			createEdge([selectedNode, newNode]);
+			selectedNode = null;
+		});
 	}
 }
 
-function createNode(){
-	console.log("TODO: Create Node");
+function createNode(latlng, callback){
+	//node creation popup
+	createPopup([latlng[1], latlng[0]], function(success){
+		if (success){
+			//TODO: check valid Input
+			coords = latlng.slice();
+			level = document.getElementById("level").value;
+			label = document.getElementById("label").value;
+			roomRef = document.getElementById("roomRef").value;
+			id = sortedNodes[sortedNodes.length - 1].properties.id + 1;
+			
+			newNode = 
+			{"geometry": 
+				{"type": "Point", "coordinates": coords}, 
+			"type": "Feature", 
+			"properties": 
+				{"Level": level, "id": id, "Label": label, "RoomRef": roomRef}
+			};
+			console.log(newNode);
+			nodes.push(newNode);
+			sortedNodes[id] = newNode;
+			if(typeof callback === 'function' && callback()){
+				callback(newNode);
+			}
+			addNode(newNode);
+			selectedNode = null;
+			closeActivePopup();
+		}else{
+			closeActivePopup();
+			console.log("canceled");
+			selectedNode = null;
+		}		
+	});
+}
+
+function createPopup(latlng, callback){
+	var popup = L.popup({closeButton: false});
+	popup.setLatLng(latlng);
+	popup.setContent(`
+		<form id="frm1" action="/action_page.php">
+			Label: <input type="text" id="label"><br>
+			Level: <input type="text" id="level"><br>
+			Room Referenced: <input type="text" id="roomRef"><br><br>
+			<input type="button" value="Submit" id="submitbtn">
+			<input type="button" value="Cancel" id="cancelbtn">
+		</form>`);
+	popup.openOn(mymap);
+	document.getElementById("cancelbtn").onclick = function() {callback(false);};
+	document.getElementById("submitbtn").onclick = function() {callback(true);};
+	document.getElementById("level").value = indoorLayer._level;
+	activePopup = popup;
+}
+
+function closeActivePopup(){
+	mymap.closePopup();
+	activePopup = null;
 }
 
 function createEdge(nodes){
@@ -130,36 +201,19 @@ function createEdge(nodes){
 //method which checks if the edge attempting to create already exists
 function isDuplicateEdge(nodes){
 	duplicate = false;
-	edges.forEach( function (elem) {
-		node1index = elem.nodes.indexOf(nodes[0].properties.id);
-		node2index = elem.nodes.indexOf(nodes[1].properties.id);
-		if((node1index != -1) && (node2index != -1)){
-			duplicate = true;
-		}
-	});
+	if (nodes[1] != null){
+		edges.forEach( function (elem) {
+			node1index = elem.nodes.indexOf(nodes[0].properties.id);
+			node2index = elem.nodes.indexOf(nodes[1].properties.id);
+			if((node1index != -1) && (node2index != -1)){
+				duplicate = true;
+			}
+		});
+	}
 	return duplicate;
 }
 
 //NOTES
-
-/*
-<form id="frm1" action="/action_page.php">
-  First name: <input type="text" name="fname"><br>
-  Last name: <input type="text" name="lname"><br><br>
-  <input type="button" onclick="myFunction()" value="Submit">
-</form>
-<script>
-function myFunction() {
-    var x = document.getElementById("frm1");
-    var text = "";
-    var i;
-    for (i = 0; i < x.length ;i++) {
-        text += x.elements[i].value + "<br>";
-    }
-    document.getElementById("demo").innerHTML = text;
-}
-</script>
-*/
 
 /*
 $.ajax({
@@ -168,22 +222,5 @@ $.ajax({
   data: data, //your data
   success: success, //callback when ajax request finishes
   dataType: dataType //text/json...
-});
-*/
-
-
-//focus problem
-/*
-Maybe map.options.closePopupOnClick = false
-
-Ok, I see. This only happens if you take a shortcut and create the popup using mymarker.bindPopup("SomeText") instead of using let mypopup = leaflet.popup(); mymarker.bindPopup(mypopup)
-*/
-
-////on map click, create a marker
-/*
-openmap.on('click',function(event){
-    var coordinates = event.latlng;
-    placeMarker(coordinates);
-    alert("Single click");
 });
 */
