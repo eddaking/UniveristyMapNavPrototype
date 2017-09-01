@@ -208,10 +208,22 @@ function clearLines(){
 		}
 	}
 }
-function addMarkers(markers, key){
+function addMarkers(markers, key, oneachfunc){
 	if(key != -1){
-		indoorMarkerLayers[key] = markers;
-		indoorLayer._layers[key].addLayer(markers);
+		var levelExists = false;
+		for (var layerKey in indoorMarkerLayers){
+			if (layerKey == key){
+				levelExists = true;
+			}
+		}
+		if (!levelExists){
+			level = new L.geoJson(markers,{
+				onEachFeature: oneachfunc
+			});
+			indoorMarkerLayers[key] = level;
+			indoorLayer._layers[key].addLayer(level);
+		}
+		indoorMarkerLayers[key].addData(markers);
 	}else{
 		markerLayer.addData(markers);
 	}

@@ -81,16 +81,12 @@ function drawAllMarkers(){
 	//for each level, check if it is the outdoor level (index -1)
 	for(var key in nodes){
 		data = nodes[key];
-		if(key != -1){
-			//for indoor layers create a new layer and add it to the correct indoor level layer
-			data = new L.geoJson(data,{
-				onEachFeature: function(feature,layer) {
-					var popupText = feature.properties.id + "<br>" + feature.properties.Label + "<br>" + feature.properties.LinkedTo + "<br>";
-					layer.bindPopup(popupText);
-				}
-			});
-		}
-		addMarkers(data, key);
+		addMarkers(data, key, 
+			function(feature,layer) {
+				var popupText = feature.properties.id + "<br>" + feature.properties.Label + "<br>" + feature.properties.LinkedTo + "<br>";
+				layer.bindPopup(popupText);
+			}
+		);
 	}
 }
 
