@@ -17,7 +17,7 @@ var levelControl = {};
 var indoorLayers = [];
 
 //function which draws a line between the specified array of points, on the specified layer
-function drawLine(points, layer, opts){
+function drawLine(points, level){
 	points = genPointsForLinePoly(points);
 	var data = {
 		"features": [
@@ -29,11 +29,11 @@ function drawLine(points, layer, opts){
 			}
 		]
 	}
-
-	if (opts.hasOwnProperty("Level")){
-		data.features[0].properties.Level = opts.Level;
+	if (level == -1){
+		linesLayer.addData(data);
+	}else{
+		indoorLayer.addData(data);
 	}
-	layer.addData(data);
 }
 
 //method which creates a polgon in the shape of a line with the points specified
