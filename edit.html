@@ -22,8 +22,9 @@
 		<input id="Save" type="button" value="Save" onclick="saveFiles();" /><br>
 	</div>
 	<script> 
-		makeMap(false);
-		init();
+		makeMap(false, function(){
+			init();
+		});
 	</script>
 </body>
 </html>

@@ -46,13 +46,13 @@ function genPointsForLinePoly(points){
 }
 
 //function for initalising map based variables
-function makeMap(incOnEachFunc){
+function makeMap(incOnEachFunc, callback){
 	//create a new map, centre on soton, using soton maps tiles
 	mymap = L.map('map').setView([50.93564, -1.39614], 17);
 	//http://tiles.maps.southampton.ac.uk/aer/{z}/{x}/{y}.png
 	L.tileLayer('http://tiles.maps.southampton.ac.uk/map/{z}/{x}/{y}.png', {
 		attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
-		maxZoom: 20
+		//maxZoom: 20
 	}).addTo(mymap);
 	
 	//create layers to add data to
@@ -75,11 +75,11 @@ function makeMap(incOnEachFunc){
 			};
 	}}).addTo(mymap);
 	
-	makeIndoorLayer(incOnEachFunc);
+	makeIndoorLayer(incOnEachFunc, callback);
 }
 
 //get data for the indoorLayer
-function makeIndoorLayer(incOnEachFunc){
+function makeIndoorLayer(incOnEachFunc, callback){
 	$.getJSON("B37RoomsAll.json", function(roomsJSON) {
 		GJSONBuilding = roomsJSON['features'];
 		if(incOnEachFunc){
@@ -172,6 +172,8 @@ function makeIndoorLayer(incOnEachFunc){
 		
 		//get a copy of the layers so that we can reset them as required
 		indoorLayers = indoorLayer.getLayers();
+		
+		callback();
 	});
 }
 
@@ -214,6 +216,7 @@ function addMarkers(markers, key, oneachfunc){
 		for (var layerKey in indoorMarkerLayers){
 			if (layerKey == key){
 				levelExists = true;
+				break;
 			}
 		}
 		if (!levelExists){
