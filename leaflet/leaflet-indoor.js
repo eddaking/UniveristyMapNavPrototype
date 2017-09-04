@@ -265,9 +265,10 @@ L.Control.Level = L.Control.extend({
             levelBtn.appendChild(levelBtn.ownerDocument.createTextNode(originalLevel));
 
             (function(level) {
-                levelBtn.onclick = function() {
+				$(levelBtn).click(function( event ) {
                     self.setLevel(level);
-                };
+					event.stopPropagation();
+                });
             })(level);
 
             buttons[level] = levelBtn;
