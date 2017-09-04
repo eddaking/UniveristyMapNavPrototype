@@ -52,7 +52,7 @@ function makeMap(incOnEachFunc, callback){
 	//http://tiles.maps.southampton.ac.uk/aer/{z}/{x}/{y}.png
 	L.tileLayer('http://tiles.maps.southampton.ac.uk/map/{z}/{x}/{y}.png', {
 		attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
-		//maxZoom: 20
+		maxZoom: 24
 	}).addTo(mymap);
 	
 	//create layers to add data to
