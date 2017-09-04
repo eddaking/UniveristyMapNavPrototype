@@ -213,6 +213,30 @@ function isDuplicateEdge(edgeNodes){
 function saveFiles(){
 	save("nodes", JSON.stringify(nodes, null, '\t'));
 	save("edges", JSON.stringify(edges, null, '\t'));
+	
+	var copy = JSON.parse(JSON.stringify(sortedNodes));
+	edges.forEach(function(edge){
+		linked = edge.nodes;
+		if (!copy[linked[0]].properties.LinkedTo){
+			copy[linked[0]].properties.LinkedTo = [linked[1]]
+		}else{
+			copy[linked[0]].properties.LinkedTo.push(linked[1])
+		}
+		if (!copy[linked[1]].properties.LinkedTo){
+			copy[linked[1]].properties.LinkedTo = [linked[0]]
+		}else{
+			copy[linked[1]].properties.LinkedTo.push(linked[0])
+		}
+	});
+	index = [];
+	copy.forEach(function (elem){
+		if (elem){
+			index.push(elem);
+		}
+	});
+	
+	save("index", JSON.stringify(index, null, '\t'))
+	
 }
 
 function save(item, objdata){
