@@ -210,6 +210,26 @@ function isDuplicateEdge(edgeNodes){
 	return duplicate;
 }
 
+function saveFiles(){
+	save("nodes", JSON.stringify(nodes, null, '\t'));
+	save("edges", JSON.stringify(edges, null, '\t'));
+}
+
+function save(item, objdata){
+	$.ajax({
+		type: "POST",
+		url: 'updateFiles.php',//url of receiver file on server
+		data: {
+			action: item,
+			data: objdata
+		},
+		success: function(data){
+			console.log(data);
+		}
+	});
+}
+
+
 //NOTES
 
 /*

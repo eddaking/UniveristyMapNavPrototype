@@ -1,2 +1,50 @@
-[{"geometry": {"type": "Point", "coordinates": [-1.39615, 50.93691]}, "type": "Feature", "properties": {"Level": -1, "id": 1, "Label": "Univeristy Cresent Crossing", "RoomRef": null}},
-{"geometry": {"type": "Point", "coordinates": [-1.39627, 50.936696]}, "type": "Feature", "properties": {"RoomRef": null, "Level": -1, "id": 2, "Label": "Univeristy Road Traffic Lights Nightingale-EEE"}}]
+[
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.39615,
+				50.93691
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": -1,
+			"id": 1,
+			"Label": "Univeristy Cresent Crossing",
+			"RoomRef": null
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.39627,
+				50.936696
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"RoomRef": null,
+			"Level": -1,
+			"id": 2,
+			"Label": "Univeristy Road Traffic Lights Nightingale-EEE"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3965243101119997,
+				50.93606275420833
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "-1",
+			"id": 3,
+			"Label": "Interchange crossing",
+			"RoomRef": ""
+		}
+	}
+]
