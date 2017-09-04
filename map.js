@@ -22,7 +22,7 @@ function drawLine(points, level){
 	var data = {
 		"features": [
 			{ "type": "Feature", 
-				"properties": { 'Level': -1,
+				"properties": { 'Level': level,
 					"type": "Route" },
 				"geometry": { "type": "Polygon", 
 					"coordinates": [ points ]}
