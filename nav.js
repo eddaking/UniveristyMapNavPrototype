@@ -20,20 +20,16 @@ function PopulateGJSONVars() {
 	$.ajax({
 		'async': false,
 		'global': false,
-		'url': "testNodes.json",
+		'url': "Index.json",
 		'dataType': "json",
 		'success': function (data) {
 			geojson = data;
 		}
 	});
-	//convert the string of property LinkedTo to an array of ints
-	geojson.features.forEach(function(elem){
-		elem.properties.LinkedTo = convertStrArrToIntArr(elem.properties.LinkedTo.split(','));
-	});
 	//an unordered list for use in foreach style situations on the data
-	GJSONUnOrdered = geojson["features"].slice();
+	GJSONUnOrdered = geojson.slice();
 	//creates a ordered list where the data is sorted by 'id', which becomes its array index.
-	geojson["features"].forEach(function(elem){
+	geojson.forEach(function(elem){
 		GJSONOrdered[elem.properties.id] = elem;
 	});
 }
@@ -61,11 +57,10 @@ function drawAllLines(){
 					destNode.linesToDo.splice(index, 1);
 				}
 				//draw a line respresnting this edge
-				console.log(currNode);
 				if(currNode.node.properties.Level){
-					drawLine([currNode.node.geometry.coordinates, destNode.node.geometry.coordinates], indoorLayer, {'Level': currNode.node.properties.Level});
+					drawLine([currNode.node.geometry.coordinates, destNode.node.geometry.coordinates], currNode.node.properties.Level);
 				}else{
-					drawLine([currNode.node.geometry.coordinates, destNode.node.geometry.coordinates], linesLayer, {});
+					drawLine([currNode.node.geometry.coordinates, destNode.node.geometry.coordinates], -1);
 				}
 			});
 		}
