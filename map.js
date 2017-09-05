@@ -173,7 +173,9 @@ function makeIndoorLayer(incOnEachFunc, callback){
 		//get a copy of the layers so that we can reset them as required
 		indoorLayers = indoorLayer.getLayers();
 		
-		callback();
+		if (typeof callback === 'function'){
+			callback();
+		}
 	});
 }
 
