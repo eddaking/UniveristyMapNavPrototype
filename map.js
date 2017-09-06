@@ -182,16 +182,21 @@ function makeIndoorLayer(incOnEachFunc, callback){
 //TODO: make this more efficent, as this task is not very scaleable
 //function to clear all markers from their layer
 function clearMarkers(){
+	//remove from outdoorlayer
 	markerLayer.clearLayers();
-	for (var key in indoorMarkerLayers){
-		indoorLayer._layers[key].removeLayer(indoorMarkerLayers[key]);
-	}
-	indoorMarkerLayers = [];
+	//remove from indoorLayer
+	removeTypeLayerFromIndoor("Marker");
 }			
 //function to clear all lines from their layer
 function clearLines(){
+	//remove from outdoorlayer
 	linesLayer.clearLayers();
-	
+	//remove from indoorLayer
+	removeTypeLayerFromIndoor("Route");
+}
+
+//function which removes all layers from the specifed indoor layer where the data property 'type' = type
+function removeTypeLayerFromIndoor(type){	
 	//hacky solution to remove routes from map
 	keys = Object.keys(indoorLayers);
 	//get all the level layers from the indoorLayer
@@ -202,33 +207,27 @@ function clearLines(){
 		//search through all the layers from last to first to find any with the "Route" tag
 		for (var y = layerKeys.length -1; y > 0 ; y = y - 1){
 			//all the "Route" tagged features should have been added last and therefore are at the end of the list.
-			if(currLayer._layers[layerKeys[y]].feature.properties.type == "Route"){
+			fetaureType = currLayer._layers[layerKeys[y]].feature.properties.type;
+			if(fetaureType == "Marker" || fetaureType == "Route"){
 				//to remove the route, need to remove the layer, and the feature, so that it isnt redrawn when the layer is redrawn
-				mymap.removeLayer(currLayer._layers[layerKeys[y]]);
-				delete currLayer._layers[layerKeys[y]];
+				if(fetaureType == type){
+					mymap.removeLayer(currLayer._layers[layerKeys[y]]);
+					delete currLayer._layers[layerKeys[y]];
+				}
 			}else{
 				break;
 			}
 		}
 	}
 }
+
 function addMarkers(markers, key, oneachfunc){
+	//make each marker have 'type' property = "Marker"
+	markers.forEach(function(elem){
+		elem.properties.type = "Marker";
+	});
 	if(key != -1){
-		var levelExists = false;
-		for (var layerKey in indoorMarkerLayers){
-			if (layerKey == key){
-				levelExists = true;
-				break;
-			}
-		}
-		if (!levelExists){
-			level = new L.geoJson(markers,{
-				onEachFeature: oneachfunc
-			});
-			indoorMarkerLayers[key] = level;
-			indoorLayer._layers[key].addLayer(level);
-		}
-		indoorMarkerLayers[key].addData(markers);
+		indoorLayer.addData(markers);
 	}else{
 		markerLayer.addData(markers);
 	}
