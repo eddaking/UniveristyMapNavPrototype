@@ -3374,5 +3374,2517 @@
 			"Label": "37/2081",
 			"RoomRef": "372081"
 		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3954044878482819,
+				50.93417423504259
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "2",
+			"id": 215,
+			"Label": "Door: External, 2703",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3959248363971712,
+				50.93403477992662
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 216,
+			"Label": "37/3117",
+			"RoomRef": "37117"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3958939909935,
+				50.934024637720064
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 217,
+			"Label": "Door: 3117, 3107",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3957538455724716,
+				50.93390504403418
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 218,
+			"Label": "37/3107",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.395804136991501,
+				50.933913918487875
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 219,
+			"Label": "Door: 3107, 3809",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3958101719617846,
+				50.9338970147651
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 220,
+			"Label": "37/3809",
+			"RoomRef": "373809"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.395726352930069,
+				50.93390504403418
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 221,
+			"Label": "37/3115",
+			"RoomRef": "373115"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3957518339157107,
+				50.933888140308206
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 222,
+			"Label": "Door: 3107, 3513",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.395763233304024,
+				50.933885182155535
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 223,
+			"Label": "37/3513",
+			"RoomRef": "373513"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.395726352930069,
+				50.93386151692732
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 224,
+			"Label": "Door: 3107, 3114",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3957618921995165,
+				50.93385644580542
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 225,
+			"Label": "37/3114",
+			"RoomRef": "373114"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3956740498542788,
+				50.9338674332355
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 226,
+			"Label": "37/3107",
+			"RoomRef": "373107"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3956700265407564,
+				50.9339240607186
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 227,
+			"Label": "37/3107",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.395682767033577,
+				50.933925751090165
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 228,
+			"Label": "Door: 3107, 3119",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3956968486309054,
+				50.933915186266844
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 229,
+			"Label": "37/3119",
+			"RoomRef": "373119"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3955902308225632,
+				50.93386067174038
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 230,
+			"Label": "Door: 3107, 3807",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3955613970756533,
+				50.93385095208942
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 231,
+			"Label": "37/3807",
+			"RoomRef": "373807"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3955949246883392,
+				50.93384672615359
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 232,
+			"Label": "37/3107",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3956090062856676,
+				50.933840387249106
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 233,
+			"Label": "Door: 3107, 3109",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.395629793405533,
+				50.93383827428075
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 234,
+			"Label": "37/3109",
+			"RoomRef": "373109"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3956116884946823,
+				50.93381925756127
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 235,
+			"Label": "37/3111",
+			"RoomRef": "373111"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3955533504486086,
+				50.93380953790165
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 236,
+			"Label": "Door: 3107, 3113",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3955271989107134,
+				50.933803621586115
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 237,
+			"Label": "37/3113",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3956358283758166,
+				50.93391138292986
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 238,
+			"Label": "Door: 3121, 3107",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3956405222415926,
+				50.93393525942909
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 239,
+			"Label": "37/3121",
+			"RoomRef": "373121"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3955895602703094,
+				50.9339130733019
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 240,
+			"Label": "Door: 3107, 3701",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3955674320459366,
+				50.93392342682922
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 241,
+			"Label": "37/3701",
+			"RoomRef": "373701"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.395586207509041,
+				50.933929131833125
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 242,
+			"Label": "Door: 3701, 3123",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3956794142723086,
+				50.934003508115964
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 243,
+			"Label": "37/3123",
+			"RoomRef": "373123"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3955942541360857,
+				50.93396589739688
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 244,
+			"Label": "37/3801",
+			"RoomRef": "373801"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3955399394035342,
+				50.93393927406053
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 245,
+			"Label": "37/3701",
+			"RoomRef": "373701"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.395477242767811,
+				50.933921947754044
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 246,
+			"Label": "37/3702",
+			"RoomRef": "373702"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3955060765147211,
+				50.9339172992317
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 247,
+			"Label": "Door: 3702, 3105",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3955144584178925,
+				50.9339134958949
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 248,
+			"Label": "37/3105",
+			"RoomRef": "373105"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3955241814255714,
+				50.933919623492926
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 249,
+			"Label": "Door: 3105, 3509",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3955290429294112,
+				50.93392384942214
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 250,
+			"Label": "37/3509",
+			"RoomRef": "373509"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3954938389360907,
+				50.93391328459839
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 251,
+			"Label": "Door: 3101, 3702",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.395490486174822,
+				50.93391138292986
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 252,
+			"Label": "37/3101",
+			"RoomRef": "373101"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3954502530395987,
+				50.93390525533074
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 253,
+			"Label": "Door: 3099, 3702",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3954844512045386,
+				50.93389764865484
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 254,
+			"Label": "37/3099",
+			"RoomRef": "373099"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3954395242035391,
+				50.93391655969401
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 255,
+			"Label": "Door: 3093, 3702",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3954306393861773,
+				50.93389997291703
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 256,
+			"Label": "Door: 3097, 3702",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3954252749681475,
+				50.93390884737169
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 257,
+			"Label": "Door: 3095, 3702",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3954415358603003,
+				50.93393061090807
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 258,
+			"Label": "37/3093",
+			"RoomRef": "373093"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3953966088593008,
+				50.933909798206024
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 259,
+			"Label": "37/3095",
+			"RoomRef": "373095"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3954400271177294,
+				50.933874194729654
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 260,
+			"Label": "37/3097",
+			"RoomRef": "373097"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3955233432352545,
+				50.93394508471063
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 261,
+			"Label": "Door: 3601, 3701",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3955062441527846,
+				50.93394814850765
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 262,
+			"Label": "37/3601",
+			"RoomRef": "373601"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3954916596412659,
+				50.933945190358784
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 263,
+			"Label": "Door: 3601, 3903",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3954797573387625,
+				50.93394223220975
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 264,
+			"Label": "37/3903",
+			"RoomRef": "373903"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3955238461494446,
+				50.933965052211846
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 265,
+			"Label": "37/3701",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3955617323517802,
+				50.93397688480111
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 266,
+			"Label": "37/3802",
+			"RoomRef": "373802"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3954618200659754,
+				50.934059501545846
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 267,
+			"Label": "Door: 3701, 3703",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.395482271909714,
+				50.934080208533054
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 268,
+			"Label": "37/3703",
+			"RoomRef": "373703"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.395503729581833,
+				50.93410133810232
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 269,
+			"Label": "Door: 3703, 3501",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3954966887831688,
+				50.93411486102162
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 270,
+			"Label": "37/3501",
+			"RoomRef": "373501"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3954809308052063,
+				50.93409499923254
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 271,
+			"Label": "Door: 3092, 3703",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.395480511710048,
+				50.93410197198926
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 272,
+			"Label": "37/3092",
+			"RoomRef": "373092"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3954948447644713,
+				50.93406911550535
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 273,
+			"Label": "Door: 3001, 3703",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3954792544245722,
+				50.934064783941416
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 274,
+			"Label": "Door: 3091, 3703",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3954919949173927,
+				50.93404407694739
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 275,
+			"Label": "37/3091",
+			"RoomRef": "373091"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3955198228359222,
+				50.934054219149694
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 276,
+			"Label": "37/3001",
+			"RoomRef": "373001"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3955325633287432,
+				50.934070277632195
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 277,
+			"Label": "Door: 3001, 3005",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3955650851130488,
+				50.93408105371602
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 278,
+			"Label": "37/3005",
+			"RoomRef": "373005"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3955613970756533,
+				50.93408887165759
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 279,
+			"Label": "Door: 3005, 3705",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.395570617169142,
+				50.93409848561102
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 280,
+			"Label": "37/3705",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3955233432352545,
+				50.93408517398269
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 281,
+			"Label": "Door: 3703, 3705",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3954499177634718,
+				50.93406024108127
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 282,
+			"Label": "Door: 3703, 3083",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3954406976699831,
+				50.934075348730765
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 283,
+			"Label": "Door: 3083, 3703",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3954064995050433,
+				50.93404893675291
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 284,
+			"Label": "37/3083",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.395451929420233,
+				50.93404439389124
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 285,
+			"Label": "Door: 3083, 3090",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3954542763531208,
+				50.93402601114398
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 286,
+			"Label": "37/3090",
+			"RoomRef": "373090"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3953820243477821,
+				50.9340922523887
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 287,
+			"Label": "37/3083",
+			"RoomRef": "373083"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3953964412212374,
+				50.93414486498473
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 288,
+			"Label": "Door: 3083, 3707",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.395530886948109,
+				50.93409415404983
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 289,
+			"Label": "Door: 3705, 3003",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3955932483077051,
+				50.93411359324809
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 290,
+			"Label": "Door: 3705, 3007",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3955992832779887,
+				50.93409964773712
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 291,
+			"Label": "Door: 3705, 3009",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3956478983163836,
+				50.93412204507088
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 292,
+			"Label": "37/3705",
+			"RoomRef": "373705"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3956525921821596,
+				50.93413123642642
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 293,
+			"Label": "Door: 3705, 3015",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3956525921821596,
+				50.93411612879509
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 294,
+			"Label": "Door: 3705, 3017",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3956116884946823,
+				50.9341188756375
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 295,
+			"Label": "Door: 3705, 3011",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3957179710268977,
+				50.9341509925523
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 296,
+			"Label": "Door: 3705, 3021",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3957246765494349,
+				50.934138103529946
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 297,
+			"Label": "Door: 3705, 3019",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3957736268639567,
+				50.934160500845174
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 298,
+			"Label": "37/3705",
+			"RoomRef": "373705"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3957687653601172,
+				50.934150886904575
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 299,
+			"Label": "Door: 3705, 3023",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3958123512566092,
+				50.934164304161804
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 300,
+			"Label": "Door: 3705, 3027",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3957753032445908,
+				50.934167790535064
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 301,
+			"Label": "Door: 3705, 3025",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3957548514008524,
+				50.93418765229307
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 302,
+			"Label": "37/3025",
+			"RoomRef": "373025"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.395665667951107,
+				50.93416757923972
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 303,
+			"Label": "Door: 3025, 3013",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3956447131931782,
+				50.93416303638963
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 304,
+			"Label": "37/3013",
+			"RoomRef": "373013"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3958140276372433,
+				50.934140005189214
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 305,
+			"Label": "37/3027",
+			"RoomRef": "373027"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3957701064646244,
+				50.93412996865335
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 306,
+			"Label": "37/3023",
+			"RoomRef": "373023"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3957206532359123,
+				50.93411148029214
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 307,
+			"Label": "37/3019",
+			"RoomRef": "373019"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3956633210182192,
+				50.934095633119554
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 308,
+			"Label": "37/3017",
+			"RoomRef": "373017"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3956207409501078,
+				50.934086336109125
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 309,
+			"Label": "37/3009",
+			"RoomRef": "373009"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3955271989107134,
+				50.9341176078641
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 310,
+			"Label": "37/3003",
+			"RoomRef": "373003"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.395569443702698,
+				50.93412859523249
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 311,
+			"Label": "37/3007",
+			"RoomRef": "373007"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3956096768379214,
+				50.93414085037109
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 312,
+			"Label": "37/3011",
+			"RoomRef": "373011"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3956582918763163,
+				50.93414465368929
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 313,
+			"Label": "37/3015",
+			"RoomRef": "373015"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3956991955637932,
+				50.93415585234668
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 314,
+			"Label": "37/3021",
+			"RoomRef": "373021"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3958146981894972,
+				50.934173072918334
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 315,
+			"Label": "Door: 3705, 3709",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.395860128104687,
+				50.93419092736936
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 316,
+			"Label": "37/3709",
+			"RoomRef": "373709"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.395850405097008,
+				50.93417465763322
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 317,
+			"Label": "Door: 3029, 3709",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3959110900759697,
+				50.934191138664595
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 318,
+			"Label": "Door: 3031, 3709",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.395883597433567,
+				50.93419832270207
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 319,
+			"Label": "Door: 3709, 3041",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3958517462015152,
+				50.93420381637703
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 320,
+			"Label": "Door: 3709, 3805",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3959258422255518,
+				50.93425241424283
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 321,
+			"Label": "37/3041",
+			"RoomRef": "373041"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3958205655217173,
+				50.93426149992515
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 322,
+			"Label": "Door: 3603, 3041",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3958111777901652,
+				50.93425896438609
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 323,
+			"Label": "37/3603",
+			"RoomRef": "373603"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3958141952753067,
+				50.93425241424283
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 324,
+			"Label": "Door: 3603, 3805",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3958172127604487,
+				50.93422748143108
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 325,
+			"Label": "37/3805",
+			"RoomRef": "373805"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3957977667450905,
+				50.93425600625699
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 326,
+			"Label": "Door: 3603, 3049",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3957689329981806,
+				50.93426319028447
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 327,
+			"Label": "37/3049",
+			"RoomRef": "373049"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3957806676626205,
+				50.93424417373874
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 328,
+			"Label": "Door: 3049, 3051",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3956988602876663,
+				50.93424269467374
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 329,
+			"Label": "Door: 3049, 3707",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.395728196948767,
+				50.934242589026255
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 330,
+			"Label": "Door: 3063, 3049",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3957057334482672,
+				50.934215860200695
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 331,
+			"Label": "37/3063",
+			"RoomRef": "373063"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.395663991570473,
+				50.93422441765245
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 332,
+			"Label": "Door: 3063, 3707",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.395651921629906,
+				50.93418733535018
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 333,
+			"Label": "Door: 3063, 3064",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3956331461668015,
+				50.93418163037796
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 334,
+			"Label": "37/3064",
+			"RoomRef": "373064"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3959152810275557,
+				50.93420011871128
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 335,
+			"Label": "Door: 3709, 3708",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3959561847150328,
+				50.93421004958441
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 336,
+			"Label": "37/3708",
+			"RoomRef": "373708"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.395994406193495,
+				50.93421966351276
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 337,
+			"Label": "Door: 3037, 3708",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3959665782749653,
+				50.934205718033624
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 338,
+			"Label": "Door: 3708, 3035",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3959389179944992,
+				50.93419863964488
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 339,
+			"Label": "Door: 3033, 3708",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3960284367203715,
+				50.934209943936835
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 340,
+			"Label": "37/3037",
+			"RoomRef": "373037"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3959902152419092,
+				50.93419156125505
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 341,
+			"Label": "37/3035",
+			"RoomRef": "373035"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.395948976278305,
+				50.93418458851179
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 342,
+			"Label": "37/3033",
+			"RoomRef": "373033"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3959070667624474,
+				50.93416683970602
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 343,
+			"Label": "37/3031",
+			"RoomRef": "373031"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3958567753434181,
+				50.93414951348435
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 344,
+			"Label": "37/3029",
+			"RoomRef": "373029"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3958188891410828,
+				50.934194096797796
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 345,
+			"Label": "Door: 3503, 3709",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3958093337714674,
+				50.93419937917807
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 346,
+			"Label": "37/3503",
+			"RoomRef": "373503"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3957789912819865,
+				50.93423836312599
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 347,
+			"Label": "37/3505",
+			"RoomRef": "37/3505"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3954484090209007,
+				50.93416789618276
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 348,
+			"Label": "37/3707",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.395545303821564,
+				50.93419663234042
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 349,
+			"Label": "37/3007",
+			"RoomRef": "373007"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3956619799137118,
+				50.93423191862737
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 350,
+			"Label": "37/3707",
+			"RoomRef": "373707"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3954370096325874,
+				50.934171593851104
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 351,
+			"Label": "Door: 3077, 3707",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3954028114676478,
+				50.93418501110232
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 352,
+			"Label": "37/3077",
+			"RoomRef": "373077"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3954702019691467,
+				50.9341509925523
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 353,
+			"Label": "Door: 3707, 3901",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.395479924976826,
+				50.93414106166653
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 354,
+			"Label": "37/3901",
+			"RoomRef": "373901"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3954215869307518,
+				50.93413683575706
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 355,
+			"Label": "Door: 3707, 3803",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.395442709326744,
+				50.934115072317184
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 356,
+			"Label": "37/3803",
+			"RoomRef": "373803"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3954514265060427,
+				50.934086336109125
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 357,
+			"Label": "Door: 3803, 3703",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3956747204065325,
+				50.93424216643623
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 358,
+			"Label": "Door: 3065, 3707",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3955930806696417,
+				50.93421755056167
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 359,
+			"Label": "Door: 3065, 3707",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3955979421734812,
+				50.93420423896741
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 360,
+			"Label": "Door: 3067, 3707",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3956183940172198,
+				50.93419768881646
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 361,
+			"Label": "37/3067",
+			"RoomRef": "373067"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3956185616552832,
+				50.93425093517811
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 362,
+			"Label": "37/3065",
+			"RoomRef": "373065"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3954812660813332,
+				50.934169903488474
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 363,
+			"Label": "Door: 3707, 3075",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3955528475344183,
+				50.93420540109087
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 364,
+			"Label": "Door: 3069, 3707",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3955271989107134,
+				50.93418353203544
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 365,
+			"Label": "Door: 3071, 3707",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3955116085708144,
+				50.93419335726451
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 366,
+			"Label": "Door: 3073, 3707",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3955645821988585,
+				50.93417022043146
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 367,
+			"Label": "37/3071",
+			"RoomRef": "373071"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3955501653254034,
+				50.93422906614408
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 368,
+			"Label": "37/3069",
+			"RoomRef": "373069"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3955639116466048,
+				50.93424248337873
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 369,
+			"Label": "Door: 3069, 3065",
+			"RoomRef": ""
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3955095969140532,
+				50.934215648905585
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 370,
+			"Label": "37/3073",
+			"RoomRef": "373073"
+		}
+	},
+	{
+		"geometry": {
+			"type": "Point",
+			"coordinates": [
+				-1.3954936712980273,
+				50.93420402767222
+			]
+		},
+		"type": "Feature",
+		"properties": {
+			"Level": "3",
+			"id": 371,
+			"Label": "Door: 3073, 3077",
+			"RoomRef": ""
+		}
 	}
 ]
