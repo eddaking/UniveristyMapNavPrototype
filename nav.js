@@ -207,25 +207,31 @@ function distBetweenCoords(coord1, coord2){
 }
 
 //function which returns all edges which are only unidirectionaly
-function findOnewayLinks(){
-	var foundone = false;
-	//for each node, check all LinkedTo nodes have this node's ID in their LinkedTo property
-	GJSONUnOrdered.forEach(function(point){
-		if(point.properties.LinkedTo.length != 0){
-			point.properties.LinkedTo.forEach(function(link){
-				if(GJSONOrdered[link].properties.LinkedTo.indexOf(point.properties.id) == -1){
-					//if the currNode is not linked back to by the other node, output the oneway link
-					console.log(point.properties.id + ":::" + point.properties.LinkedTo);
-					console.log(point.properties.id + " -\-> " + link + "\n");
-					console.log(GJSONOrdered[link].properties.id + ":::" + GJSONOrdered[link].properties.LinkedTo);
-					console.log("\n");
-					foundone = true;
-				}
-			});
+function miscFunc(){
+	var doors = 0;
+	var	rooms = 0;
+	GJSONUnOrdered.forEach(function(elem){
+		prop = elem.properties;
+		label = prop.Label;
+		if (label.substring(0,5) == "Door:"){
+			
+			doors = doors + 1;
+		}else if (prop.Label.substring(0,3) == "37/") {
+			
+			str = label.slice(0, 2) + label.slice(3);
+			
+			if (str != prop.RoomRef){
+				console.log(label + ", ",  + prop.RoomRef + ", " + prop.id);				
+			}
+			
+			/*expr = new RegExp("^37/" + prop.Level +"\\d\\d\\d$");
+			if (!expr.test(label)){
+				console.log(label + ", ",  + prop.Level + ", " + prop.id);
+			}*/
+		}else{
+			console.log("BAD LABEL" + prop);
 		}
+		
 	});
-	//if no-one way links are discovered then tell the user this.
-	if (!foundone){
-		console.log("No one way links found!");
-	}
+	console.log("TESTED");
 }
