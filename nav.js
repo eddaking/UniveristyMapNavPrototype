@@ -78,7 +78,7 @@ function drawAllMarkers(){
 		data = nodes[key];
 		addMarkers(data, key, 
 			function(feature,layer) {
-				var popupText = feature.properties.id + "<br>" + feature.properties.Label + "<br>" + feature.properties.LinkedTo + "<br>";
+				var popupText = feature.properties.id + "<br>" + feature.properties.Label + "<br>" + feature.properties.LinkedTo + "<br>"  + feature.properties.RoomRef + "<br>";
 				layer.bindPopup(popupText);
 			}
 		);
@@ -102,6 +102,15 @@ function splitMarkerData(){
 	return splitNodes;
 }
 
+function getNodeFromRoomRef(roomref){
+	for (index in GJSONUnOrdered){
+		if (GJSONUnOrdered[index].properties.RoomRef == roomref){
+			return GJSONUnOrdered[index];
+		}
+	}
+	return false;
+}
+
 //method for calculating the route between two specified nodes
 function calcRoute(){
 	//clear the map of exisiting lines
@@ -111,11 +120,13 @@ function calcRoute(){
 	var endVal = parseInt($("#end")[0].value);
 	var routefound = false;
 	var priorityQ = [];
-	var startNode = GJSONOrdered[startVal];
-	var endNode = GJSONOrdered[endVal];
+	var startNode = getNodeFromRoomRef(startVal);
+	startVal = startNode.properties.id;
+	var endNode = getNodeFromRoomRef(endVal);
+	endVal = endVal = endNode.properties.id;
 	priorityQ[0] = {'val': distBetweenCoords(startNode.geometry.coordinates, endNode.geometry.coordinates), 'distTravelled': 0.0, 'node':startNode, 'route':[startVal]}
 	//while there are nodes to be explored and the top item isnt a solution
-	while(priorityQ.length > 0 &&priorityQ[0].route.indexOf(endVal) == -1){
+	while(priorityQ.length > 0 && priorityQ[0].route.indexOf(endVal) == -1){
 		doOneNode(priorityQ, endNode);
 	}
 	//if there are no items in the list, there is no path, sorry.
