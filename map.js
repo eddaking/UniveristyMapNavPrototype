@@ -59,7 +59,7 @@ function makeMap(incOnEachFunc, callback){
 	//when creating the marker layer, add a function to it so that when any new feayres are added a popup is created with the specified html
 	markerLayer = L.geoJson([],{
 			onEachFeature: function(feature,layer) {
-				var popupText = feature.properties.id + "<br>" + feature.properties.Label + "<br>" + feature.properties.LinkedTo + "<br>";
+				var popupText = feature.properties.id + "<br>" + feature.properties.Label + "<br>" + feature.properties.LinkedTo + "<br>"  + feature.properties.RoomRef + "<br>";
 				layer.bindPopup(popupText);
 			}
 		}).addTo(mymap);
@@ -238,7 +238,7 @@ function addMarkers(markers, key, oneachfunc){
 function setNavPoint(point, start){
 	
 	//TODO: NOT LEAVE THIS HERE, FIX THE DATA TO INCLUDE A THING FOR BULIDING No
-	var buildingNo = 23;
+	var buildingNo = 37;
 	if (start) {
 		$("#start")[0].value = "" + buildingNo + point.id;
 	}else{
