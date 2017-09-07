@@ -173,7 +173,7 @@ function doOneNode(index, dest){
 			var currNodeCoords = currNode.node.geometry.coordinates;
 			var destNodeCoords = GJSONOrdered[elem].geometry.coordinates;
 			//calc the new dist travelled
-			var newDist = currNode.distTravelled + distBetweenCoords(currNodeCoords, destNodeCoords);
+			var newDist = currNode.distTravelled + distBetweenCoords(currNodeCoords, destNodeCoords) + 0.35*Math.abs(currNode.node.properties.Level - GJSONOrdered[elem].properties.Level);
 			//calc the dist travelled + minimum dist to travel to destination
 			var newVal = newDist + distBetweenCoords(currNodeCoords, dest.geometry.coordinates);
 			//make new index object
