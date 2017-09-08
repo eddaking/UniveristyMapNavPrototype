@@ -136,12 +136,11 @@ function makeIndoorLayer(navMode, callback){
 					fillOpacity: 1
 				};
 		}});
-		
+		//if editing, replace the on each function from the indoor layer with a function for adding markers
 		if(!navMode){
-			delete indoorLayer.options.onEachFeature;
+			indoorLayer.options.onEachFeature = markerEdit;
 			for (key in indoorLayer._layers){
-				iLayer = indoorLayer._layers[key];
-				delete iLayer.options.onEachFeature;
+				indoorLayer._layers[key].options.onEachFeature = markerEdit;
 			}
 		}
 		//set the current level to show
@@ -155,6 +154,7 @@ function makeIndoorLayer(navMode, callback){
 		
 		mymap.addLayer(indoorLayer);
 		
+		//add a level selector to the screen
 		levelControl = new L.Control.Level({
 			level: "1",
 			levels: indoorLayer.getLevels()
@@ -174,7 +174,6 @@ function makeIndoorLayer(navMode, callback){
 	});
 }
 
-//TODO: make this more efficent, as this task is not very scaleable
 //function to clear all markers from their layer
 function clearMarkers(){
 	//remove from outdoorlayer
@@ -182,6 +181,7 @@ function clearMarkers(){
 	//remove from indoorLayer
 	removeTypeLayerFromIndoor("Marker");
 }			
+
 //function to clear all lines from their layer
 function clearLines(){
 	//remove from outdoorlayer
@@ -216,15 +216,13 @@ function removeTypeLayerFromIndoor(type){
 	}
 }
 
-function addMarkers(markers, key, oneachfunc){
+//method for adding markers to the map
+function addMarkers(markers, key){
 	//make each marker have 'type' property = "Marker"
 	markers.forEach(function(elem){
 		elem.properties.type = "Marker";
 	});
 	if(key != -1){
-		if (!(typeof oneachfunc === 'undefined')){
-			indoorLayer._layers[key].options.onEachFeature = oneachfunc;
-		}
 		indoorLayer.addData(markers);
 	}else{
 		markerLayer.addData(markers);

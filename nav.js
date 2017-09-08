@@ -97,6 +97,7 @@ function splitMarkerData(){
 	return splitNodes;
 }
 
+//method which returns a node from a given roomref
 function getNodeFromRoomRef(roomref){
 	for (index in GJSONUnOrdered){
 		if (GJSONUnOrdered[index].properties.RoomRef == roomref){
@@ -113,12 +114,17 @@ function calcRoute(){
 	//get the inputs from the forms
 	var startVal = parseInt($("#start")[0].value);
 	var endVal = parseInt($("#end")[0].value);
-	var routefound = false;
-	var priorityQ = [];
+	//use the input to get the node and id represented by the input
 	var startNode = getNodeFromRoomRef(startVal);
 	startVal = startNode.properties.id;
 	var endNode = getNodeFromRoomRef(endVal);
-	endVal = endVal = endNode.properties.id;
+	endVal = endNode.properties.id;
+	//initalise variables
+	var routefound = false;
+	var priorityQ = [];
+	//add the start node to the queue, as part of an object containing other properties:
+	//val - which represents the distance traveled + distance to end + an ammount for vertical changes,
+	//route - which lits nodes visited on route
 	priorityQ[0] = {'val': distBetweenCoords(startNode.geometry.coordinates, endNode.geometry.coordinates), 'distTravelled': 0.0, 'node':startNode, 'route':[startVal]}
 	//while there are nodes to be explored and the top item isnt a solution
 	while(priorityQ.length > 0 && priorityQ[0].route.indexOf(endVal) == -1){
@@ -130,8 +136,6 @@ function calcRoute(){
 	}else{
 		//if there is an item on the list, then it is a solution, so we return that, yay.
 		console.log("route: " + priorityQ[0].route);
-		var routeCoordsInternal = [];
-		var routeCoordsExternal = [];
 		var currLev = getLevel(GJSONOrdered[priorityQ[0].route[0]]);
 		var currLine = [];
 		priorityQ[0].route.forEach(function(point){
@@ -140,15 +144,16 @@ function calcRoute(){
 			if (newNodeLev == currLev){
 				currLine.push(GJSONOrdered[point].geometry.coordinates);
 			}else{
-				drawLine(currLine,currLev, {'Level': currLev});
+				drawLine(currLine,currLev);
 				currLev = newNodeLev;
 				currLine = [GJSONOrdered[point].geometry.coordinates];
 			}
 		});
-		drawLine(currLine, currLev, {'Level': currLev});
+		drawLine(currLine, currLev);
 	}
 }
 
+//method which returns the level of the node passed to it
 function getLevel(node){
 	if(node.properties.hasOwnProperty("Level")){
 		return node.properties.Level;
@@ -197,11 +202,12 @@ function doOneNode(index, dest){
 	});
 }
 
+//return the distance between two latLong cords multiplied by 10000 to make them not tiny
 function distBetweenCoords(coord1, coord2){
 	return Math.sqrt(Math.pow(coord1[0] - coord2[0] ,2) + Math.pow(coord1[1] - coord2[1],2))*10000;
 }
 
-//function which returns all edges which are only unidirectionaly
+//function used for debugging, changed as needed. Enter at your peril
 function miscFunc(){
 	var doors = 0;
 	var	rooms = 0;
