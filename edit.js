@@ -1,51 +1,49 @@
-//CODE
+//location of nodes and edges file, relative
 var nodeFileUrl = 'Nodes.json';
 var edgeFileUrl = 'Edges.json';
 
+//vars for holding all nodes and edges
 var nodes = []
 var edges = []
 var sortedNodes = []
 
-function editMarkerClick(feature, layer) {
-	layer.on('click', function(event){
-		main(feature);
+//method for getting, sorting and displaying data
+function init(){
+	loadFiles(function(){
+		sortNodes();	
+		drawAllNodes();
+		drawAllEdges();
 	});
 }
 
-function init(){
-	loadFiles();
-	sortNodes();	
-	drawAllNodes();
-	drawAllEdges();
-}
-
 //method which loads nodes and edge files
-function loadFiles(){
-	nodes = loadFile(nodeFileUrl);
-	edges = loadFile(edgeFileUrl);
+function loadFiles(callback){
+	loadFile(nodes, nodeFileUrl, function(){		
+		loadFile(edges, edgeFileUrl, function(){		
+			callback();
+		});
+	});
 }
 
 //method which sorts the nodes by id
 function sortNodes(){
 	for(var index in nodes){
 		id = nodes[index].properties.id;
-		sortedNodes[id] = nodes[index]
+		sortedNodes[id] = nodes[index];
 	}
 }
 
 //fucntion which loads the sepcifed file and returns its contents
-function loadFile(url){
+function loadFile(variable, url, callback){
 	var contents = []
 	$.ajax({
-		'async': false,
-		'global': false,
 		'url': url,
 		'dataType': "json",
 		'success': function (data) {
-			contents = data;
+			variable.push.apply(variable, data);
+			callback();
 		}
 	});
-	return contents;
 }
 
 //draw all nodes on the map
@@ -62,13 +60,13 @@ function drawAllNodes(){
 	}
 	
 	for(var level in levels){
-		addMarkers(levels[level], level, editMarkerClick);
+		addMarkers(levels[level], level);
 	}
 }
 
 function addNode(newNode){
 	level = newNode.properties.Level;
-	addMarkers([newNode], level, editMarkerClick);
+	addMarkers([newNode], level);
 }
 
 //draw all edges on the map
