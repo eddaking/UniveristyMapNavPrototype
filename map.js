@@ -16,6 +16,24 @@ var levelControl = {};
 //intial contents of the indoorLayer
 var indoorLayers = [];
 
+//functions for click handling
+function roomInfo(feature, layer) {
+	layer.bindPopup(JSON.stringify(feature.properties) + "<br>" + '<input id="DrawRoute" type="button" value="Set Start" onclick=\'setNavPoint(' + JSON.stringify(feature.properties) + ',true)\' /><br><input id="DrawRoute" type="button" value="Set End" onclick=\'setNavPoint(' + JSON.stringify(feature.properties) + ',false)\' />');
+}
+function markerDebug(feature,layer) {
+	layer.bindPopup(feature.properties.id + "<br>" + feature.properties.Label + "<br>" + feature.properties.LinkedTo + "<br>"  + feature.properties.RoomRef + "<br>");
+}
+function markerEdit(feature, layer) {
+	layer.on('click', function(event){
+		main(feature);
+	});
+}
+function markerLevelChange(feature, layer) {
+	layer.on('click', function(event){
+		main(feature);
+	});
+}
+
 //function which draws a line between the specified array of points, on the specified layer
 function drawLine(points, level){
 	points = genPointsForLinePoly(points);
@@ -46,7 +64,7 @@ function genPointsForLinePoly(points){
 }
 
 //function for initalising map based variables
-function makeMap(incOnEachFunc, callback){
+function makeMap(navMode, callback){
 	//create a new map, centre on soton, using soton maps tiles
 	mymap = L.map('map').setView([50.93564, -1.39614], 17);
 	//http://tiles.maps.southampton.ac.uk/aer/{z}/{x}/{y}.png
@@ -55,13 +73,18 @@ function makeMap(incOnEachFunc, callback){
 		maxZoom: 24
 	}).addTo(mymap);
 	
+	if (!navMode){
+		mymap.on('click', function(event){
+			latlang = event.latlng;
+			main([latlang.lng, latlang.lat]);
+		});
+		mymap.options.closePopupOnClick = false;
+	}
+	
 	//create layers to add data to
 	//when creating the marker layer, add a function to it so that when any new feayres are added a popup is created with the specified html
 	markerLayer = L.geoJson([],{
-			onEachFeature: function(feature,layer) {
-				var popupText = feature.properties.id + "<br>" + feature.properties.Label + "<br>" + feature.properties.LinkedTo + "<br>"  + feature.properties.RoomRef + "<br>";
-				layer.bindPopup(popupText);
-			}
+			onEachFeature: (navMode ? markerDebug : markerEdit)
 		}).addTo(mymap);
 		
 	linesLayer = L.geoJson([],{
@@ -75,80 +98,52 @@ function makeMap(incOnEachFunc, callback){
 			};
 	}}).addTo(mymap);
 	
-	makeIndoorLayer(incOnEachFunc, callback);
+	makeIndoorLayer(navMode, callback);
 }
 
 //get data for the indoorLayer
-function makeIndoorLayer(incOnEachFunc, callback){
+function makeIndoorLayer(navMode, callback){
 	$.getJSON("B37RoomsAll.json", function(roomsJSON) {
 		GJSONBuilding = roomsJSON['features'];
-		if(incOnEachFunc){
-			indoorLayer = new L.Indoor(GJSONBuilding, {
-				getLevel: function(feature) { 
-					if (feature.properties.length === 0){
-						return null;
-					}
-					return feature.properties.Level;
-				},
-				onEachFeature: function(feature, layer) {
-					layer.bindPopup(JSON.stringify(feature.properties) + "<br>" + '<input id="DrawRoute" type="button" value="Set Start" onclick=\'setNavPoint(' + JSON.stringify(feature.properties) + ',true)\' /><br><input id="DrawRoute" type="button" value="Set End" onclick=\'setNavPoint(' + JSON.stringify(feature.properties) + ',false)\' />');
-				},
-				//set the style for the items on the layer
-				style: function(feature) {
-					var fill = 'white';
-					if (feature.properties.type === 'Way') {
-						fill = '#169EC6';
-					} else if ((feature.properties.type === 'Stairs') || (feature.properties.type === 'Lift') ) {
-						fill = '#0A485B';
-					} else if (feature.properties.type === 'Route')  {
-						return {
-							fillColor: 'white',
-							weight: 5,
-							color: 'red',
-							opacity: 1,
-							fillOpacity: 1
-						}
-					}
+		indoorLayer = new L.Indoor(GJSONBuilding, {
+			getLevel: function(feature) { 
+				if (feature.properties.length === 0){
+					return null;
+				}
+				return feature.properties.Level;
+			},
+			onEachFeature: (navMode ? roomInfo : null),
+			//set the style for the items on the layer
+			style: function(feature) {
+				var fill = 'white';
+				if (feature.properties.type === 'Way') {
+					fill = '#169EC6';
+				} else if ((feature.properties.type === 'Stairs') || (feature.properties.type === 'Lift') ) {
+					fill = '#0A485B';
+				} else if (feature.properties.type === 'Route')  {
 					return {
-						fillColor: fill,
-						weight: 1,
-						color: '#666',
+						fillColor: 'white',
+						weight: 5,
+						color: 'red',
+						opacity: 1,
 						fillOpacity: 1
-					};
-			}});
-		}else{
-			indoorLayer = new L.Indoor(GJSONBuilding, {
-				getLevel: function(feature) {
-					if (feature.properties.length === 0){
-						return null;
 					}
-					return feature.properties.Level;
-				},
-				//set the style for the items on the layer
-				style: function(feature) {
-					var fill = 'white';
-					if (feature.properties.type === 'Way') {
-						fill = '#169EC6';
-					} else if ((feature.properties.type === 'Stairs') || (feature.properties.type === 'Lift') ) {
-						fill = '#0A485B';
-					} else if (feature.properties.type === 'Route')  {
-						return {
-							fillColor: 'white',
-							weight: 5,
-							color: 'red',
-							opacity: 1,
-							fillOpacity: 1
-						}
-					}
-					return {
-						fillColor: fill,
-						weight: 1,
-						color: '#666',
-						fillOpacity: 1
-					};
-			}});
-		}
+				}
+				return {
+					fillColor: fill,
+					weight: 1,
+					color: '#666',
+					fillOpacity: 1
+				};
+		}});
 		
+		if(!navMode){
+			delete indoorLayer.options.onEachFeature;
+			for (key in indoorLayer._layers){
+				iLayer = indoorLayer._layers[key];
+				delete iLayer.options.onEachFeature;
+			}
+		}
 		//set the current level to show
 		indoorLayer.setLevel("1");
 		
@@ -227,10 +222,18 @@ function addMarkers(markers, key, oneachfunc){
 		elem.properties.type = "Marker";
 	});
 	if(key != -1){
+		if (!(typeof oneachfunc === 'undefined')){
+			indoorLayer._layers[key].options.onEachFeature = oneachfunc;
+		}
 		indoorLayer.addData(markers);
 	}else{
 		markerLayer.addData(markers);
 	}
+}
+
+//get the indoor level 
+function getCurrIndoorLev(){
+	return indoorLayer._level;
 }
 
 //thing thing thing

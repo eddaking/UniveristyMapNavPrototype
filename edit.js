@@ -6,19 +6,15 @@ var nodes = []
 var edges = []
 var sortedNodes = []
 
+function editMarkerClick(feature, layer) {
+	layer.on('click', function(event){
+		main(feature);
+	});
+}
+
 function init(){
 	loadFiles();
-	sortNodes();
-	mymap.on('click', function(event){
-		latlang = event.latlng;
-		main([latlang.lng, latlang.lat]);
-	});
-	mymap.options.closePopupOnClick = false;
-	markerLayer.options.onEachFeature = function(feature, layer) {
-		layer.on('click', function(event){
-			main(feature);
-		});
-	}
+	sortNodes();	
 	drawAllNodes();
 	drawAllEdges();
 }
@@ -66,23 +62,13 @@ function drawAllNodes(){
 	}
 	
 	for(var level in levels){
-		addMarkers(levels[level], level, 
-			function(feature, layer) {
-				layer.on('click', function(event){
-				main(feature);
-		});
-	});
+		addMarkers(levels[level], level, editMarkerClick);
 	}
 }
 
 function addNode(newNode){
 	level = newNode.properties.Level;
-	addMarkers(newNode, level, 
-			function(feature, layer) {
-				layer.on('click', function(event){
-				main(feature);
-			});
-		});
+	addMarkers([newNode], level, editMarkerClick);
 }
 
 //draw all edges on the map
@@ -176,7 +162,7 @@ function createPopup(latlng, callback){
 	popup.openOn(mymap);
 	document.getElementById("cancelbtn").onclick = function() {callback(false);};
 	document.getElementById("submitbtn").onclick = function() {callback(true);};
-	document.getElementById("level").value = indoorLayer._level;
+	document.getElementById("level").value = getCurrIndoorLev();
 	activePopup = popup;
 }
 
