@@ -159,9 +159,6 @@ L.Indoor = L.Class.extend({
             level = level.newLevel;
         }
 
-        if (this._level === level)
-            return;
-
         var oldLayer = this._layers[this._level];
         var layer = this._layers[level];
 
