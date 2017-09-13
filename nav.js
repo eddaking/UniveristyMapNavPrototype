@@ -144,6 +144,7 @@ function calcRoute(){
 			if (newNodeLev == currLev){
 				currLine.push(GJSONOrdered[point].geometry.coordinates);
 			}else{
+				addLevelChangeMarker(currLine.slice().pop(), currLev, newNodeLev);
 				drawLine(currLine,currLev);
 				currLev = newNodeLev;
 				currLine = [GJSONOrdered[point].geometry.coordinates];

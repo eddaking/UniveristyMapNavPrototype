@@ -16,6 +16,14 @@ var levelControl = {};
 //intial contents of the indoorLayer
 var indoorLayers = [];
 
+//stairs icon
+var stairs = new L.icon({
+    iconUrl: 'leaflet/images/stairs.png',
+
+    iconSize:     [32, 32], // size of the icon
+    iconAnchor:   [16, 16], // point of the icon which will correspond to marker's location
+});
+
 //functions for click handling
 function roomInfo(feature, layer) {
 	layer.bindPopup(JSON.stringify(feature.properties) + "<br>" + '<input id="DrawRoute" type="button" value="Set Start" onclick=\'setNavPoint(' + JSON.stringify(feature.properties) + ',true)\' /><br><input id="DrawRoute" type="button" value="Set End" onclick=\'setNavPoint(' + JSON.stringify(feature.properties) + ',false)\' />');
@@ -107,6 +115,11 @@ function makeIndoorLayer(navMode, callback){
 		GJSONBuilding = roomsJSON['features'];
 		indoorLayer = new L.Indoor(GJSONBuilding, {
 			getLevel: function(feature) { 
+				
+				if (Array.isArray(feature)){
+					feature = feature[0];
+				}
+				
 				if (feature.properties.length === 0){
 					return null;
 				}
@@ -217,15 +230,46 @@ function removeTypeLayerFromIndoor(type){
 }
 
 //method for adding markers to the map
-function addMarkers(markers, key){
+function addMarkers(markers, key, type){
+	//default val for type
+	type =  (typeof type !== 'undefined') ? type : "Marker";
 	//make each marker have 'type' property = "Marker"
 	markers.forEach(function(elem){
-		elem.properties.type = "Marker";
+		elem.properties.type = type;
 	});
 	if(key != -1){
 		indoorLayer.addData(markers);
-	}else{
+	} else {
 		markerLayer.addData(markers);
+	}
+}
+
+//method to add a marker which will change level when clicked
+function addLevelChangeMarker(coords, startLev, endLev){	
+	m = L.marker([coords[1], coords[0]], {icon: stairs});
+	m.feature = 
+	{
+		"features": [
+			{ "type": "Feature", 
+				"properties": { 'Level': startLev,
+					"type": "Route" },
+				"geometry": { "type": "Point", 
+					"coordinates": coords }
+			}
+		]
+	};
+	if (startLev == -1){
+		m.addTo(linesLayer);
+	}else{
+		indoorLayer._layers[startLev].addData(m.feature);
+		levelLayer = indoorLayer._layers[startLev]._layers;
+		layerKeys = Object.keys(levelLayer);
+		newMarkerLayer = levelLayer[layerKeys[layerKeys.length - 1]];
+		newMarkerLayer.options.icon = stairs;
+		newMarkerLayer._events.click = [];
+		newMarkerLayer.on('click', function(event){
+			indoorLayer.setLevel(endLev.toString());
+		});
 	}
 }
 
