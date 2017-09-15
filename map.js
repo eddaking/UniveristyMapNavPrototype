@@ -270,6 +270,9 @@ function addLevelChangeMarker(coords, startLev, endLev){
 		newMarkerLayer.on('click', function(event){
 			indoorLayer.setLevel(endLev.toString());
 		});
+		if(indoorLayer.getLevel() == startLev){
+			indoorLayer.setLevel(startLev);
+		}
 	}
 }
 
