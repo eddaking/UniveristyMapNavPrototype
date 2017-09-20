@@ -104,6 +104,7 @@ function getNodeFromRoomRef(roomref){
 			return GJSONUnOrdered[index];
 		}
 	}
+	alert( "did not find : "+roomref);
 	return false;
 }
 
@@ -118,6 +119,8 @@ function calcRoute(){
 	var startNode = getNodeFromRoomRef(startVal);
 	startVal = startNode.properties.id;
 	var endNode = getNodeFromRoomRef(endVal);
+
+	addTargetMarker(endNode.geometry.coordinates, getLevel(endNode));
 	endVal = endNode.properties.id;
 	//initalise variables
 	var routefound = false;
@@ -135,7 +138,6 @@ function calcRoute(){
 		console.log("No Route found");
 	}else{
 		//if there is an item on the list, then it is a solution, so we return that, yay.
-		console.log("route: " + priorityQ[0].route);
 		var currLev = getLevel(GJSONOrdered[priorityQ[0].route[0]]);
 		var currLine = [];
 		priorityQ[0].route.forEach(function(point){

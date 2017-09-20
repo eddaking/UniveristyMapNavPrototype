@@ -16,17 +16,26 @@ var levelControl = {};
 //intial contents of the indoorLayer
 var indoorLayers = [];
 
+
 //stairs icon
 var stairs = new L.icon({
-    iconUrl: 'leaflet/images/stairs.png',
-
+    iconUrl: 'http://data.southampton.ac.uk/map-icons/Offices/elevator_up.png',
     iconSize:     [32, 32], // size of the icon
-    iconAnchor:   [16, 16], // point of the icon which will correspond to marker's location
+    iconAnchor:   [16, 31], // point of the icon which will correspond to marker's location
+});
+
+//target icon
+var target = new L.icon({
+    iconUrl: 'http://data.southampton.ac.uk/map-icons/Culture-and-Entertainment/party-2.png',
+    iconSize:     [32, 32], // size of the icon
+    iconAnchor:   [16, 31], // point of the icon which will correspond to marker's location
 });
 
 //functions for click handling
 function roomInfo(feature, layer) {
-	layer.bindPopup(JSON.stringify(feature.properties) + "<br>" + '<input id="DrawRoute" type="button" value="Set Start" onclick=\'setNavPoint(' + JSON.stringify(feature.properties) + ',true)\' /><br><input id="DrawRoute" type="button" value="Set End" onclick=\'setNavPoint(' + JSON.stringify(feature.properties) + ',false)\' />');
+	//console.log( feature.properties.type);
+	// JSON.stringify(feature.properties) + "<br>" +
+	layer.bindPopup( '<h2>'+feature.properties.type+'</h2>'+ '<input id="DrawRoute" type="button" value="Set Start" onclick=\'setNavPoint(' + JSON.stringify(feature.properties) + ',true); closePopup();\' />&nbsp;<input id="DrawRoute" type="button" value="Set End" onclick=\'setNavPoint(' + JSON.stringify(feature.properties) + ',false); closePopup();\' />');
 }
 function markerDebug(feature,layer) {
 	layer.bindPopup(feature.properties.id + "<br>" + feature.properties.Label + "<br>" + feature.properties.LinkedTo + "<br>"  + feature.properties.RoomRef + "<br>");
@@ -40,6 +49,10 @@ function markerLevelChange(feature, layer) {
 	layer.on('click', function(event){
 		main(feature);
 	});
+}
+function closePopup() {
+	// hacky but quick
+	$(".leaflet-popup-close-button")[0].click();
 }
 
 //function which draws a line between the specified array of points, on the specified layer
@@ -74,7 +87,7 @@ function genPointsForLinePoly(points){
 //function for initalising map based variables
 function makeMap(navMode, callback){
 	//create a new map, centre on soton, using soton maps tiles
-	mymap = L.map('map').setView([50.93564, -1.39614], 17);
+	mymap = L.map('map').setView([50.93414, -1.39550], 19);
 	//http://tiles.maps.southampton.ac.uk/aer/{z}/{x}/{y}.png
 	L.tileLayer('http://tiles.maps.southampton.ac.uk/map/{z}/{x}/{y}.png', {
 		attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
@@ -126,7 +139,31 @@ function makeIndoorLayer(navMode, callback){
 				return feature.properties.Level;
 			},
 			onEachFeature: (navMode ? roomInfo : null),
+
+			pointToLayer: function(feature, latlng) {
+				
+				if( feature.properties.type == "Marker" ) {
+					return L.circle( latlng, { radius:0.5} );
+				}
+				if( feature.properties.type == "Target" ) {
+					var m = L.marker([feature.geometry.coordinates[1],feature.geometry.coordinates[0]], {icon: target});
+					return m;
+				}
+				if( feature.properties.type == "LevelChange" ) {
+					var m = L.marker([feature.geometry.coordinates[1],feature.geometry.coordinates[0]], {icon: stairs});
+					m.on('click', function(event){
+						indoorLayer.setLevel(feature.properties.targetLevel.toString());
+					});
+					return m;
+				}
+
+    				return L.marker(latlng);
+			},
 			//set the style for the items on the layer
+/*
+			markerForFeature: function( feature ) {
+			},
+*/
 			style: function(feature) {
 				var fill = 'white';
 				if (feature.properties.type === 'Way') {
@@ -156,8 +193,10 @@ function makeIndoorLayer(navMode, callback){
 				indoorLayer._layers[key].options.onEachFeature = markerEdit;
 			}
 		}
+
+		var startingLevel = "2";
 		//set the current level to show
-		indoorLayer.setLevel("1");
+		indoorLayer.setLevel(startingLevel);
 		
 		//leaflet-indoor layers are missing these methods, so I stole them from a blank geoJson layer.
 		var blankGJson = new L.geoJson();
@@ -169,7 +208,7 @@ function makeIndoorLayer(navMode, callback){
 		
 		//add a level selector to the screen
 		levelControl = new L.Control.Level({
-			level: "1",
+			level: startingLevel,
 			levels: indoorLayer.getLevels()
 		});
 		// Connect the level control to the indoor layer
@@ -201,6 +240,8 @@ function clearLines(){
 	linesLayer.clearLayers();
 	//remove from indoorLayer
 	removeTypeLayerFromIndoor("Route");
+	removeTypeLayerFromIndoor("Target");
+	removeTypeLayerFromIndoor("LevelChange");
 }
 
 //function which removes all layers from the specifed indoor layer where the data property 'type' = type
@@ -208,22 +249,19 @@ function removeTypeLayerFromIndoor(type){
 	//hacky solution to remove routes from map
 	keys = Object.keys(indoorLayers);
 	//get all the level layers from the indoorLayer
-	for (var key in keys){		
+	for (var keyi in keys){		
 		//get the keys to layers
-		var currLayer = indoorLayers[keys[key]];
-		var layerKeys = Object.keys(currLayer._layers)
-		//search through all the layers from last to first to find any with the "Route" tag
-		for (var y = layerKeys.length -1; y > 0 ; y = y - 1){
-			//all the "Route" tagged features should have been added last and therefore are at the end of the list.
-			fetaureType = currLayer._layers[layerKeys[y]].feature.properties.type;
-			if(fetaureType == "Marker" || fetaureType == "Route"){
-				//to remove the route, need to remove the layer, and the feature, so that it isnt redrawn when the layer is redrawn
-				if(fetaureType == type){
-					mymap.removeLayer(currLayer._layers[layerKeys[y]]);
-					delete currLayer._layers[layerKeys[y]];
+		var key = keys[keyi];
+		var listObj = indoorLayers[key]._layers;
+		listKeys = Object.keys(listObj);
+		for( var lki in listKeys ) {
+			var lk = listKeys[lki];
+			if( lk.match( /\d+/ ) ) {
+				var item = listObj[lk];
+				if(!item['feature'] || item.feature.properties.type == type) {
+					mymap.removeLayer( item );
+					delete listObj[lk];
 				}
-			}else{
-				break;
 			}
 		}
 	}
@@ -244,36 +282,50 @@ function addMarkers(markers, key, type){
 	}
 }
 
-//method to add a marker which will change level when clicked
-function addLevelChangeMarker(coords, startLev, endLev){	
-	m = L.marker([coords[1], coords[0]], {icon: stairs});
-	m.feature = 
-	{
+function addTargetMarker(coords, level ) {
+	if (level == -1){
+		var marker = L.marker([coords[1], coords[0]], {icon: target});
+		marker.addTo(linesLayer);
+		return;
+	}
+
+	var feature = {
 		"features": [
 			{ "type": "Feature", 
-				"properties": { 'Level': startLev,
-					"type": "Route" },
+				"properties": { 'Level': level,
+					"type": "Target" },
 				"geometry": { "type": "Point", 
 					"coordinates": coords }
 			}
 		]
 	};
+	indoorLayer._layers[level].addData(feature);
+}
+
+
+
+
+
+//method to add a marker which will change level when clicked
+function addLevelChangeMarker(coords, startLev, endLev){	
 	if (startLev == -1){
-		m.addTo(linesLayer);
-	}else{
-		indoorLayer._layers[startLev].addData(m.feature);
-		levelLayer = indoorLayer._layers[startLev]._layers;
-		layerKeys = Object.keys(levelLayer);
-		newMarkerLayer = levelLayer[layerKeys[layerKeys.length - 1]];
-		newMarkerLayer.options.icon = stairs;
-		newMarkerLayer._events.click = [];
-		newMarkerLayer.on('click', function(event){
-			indoorLayer.setLevel(endLev.toString());
-		});
-		if(indoorLayer.getLevel() == startLev){
-			indoorLayer.setLevel(startLev);
-		}
+		var marker = L.marker([coords[1], coords[0]], {icon: stairs});
+		marker.addTo(linesLayer);
+		return;
 	}
+
+	var feature = {
+		"features": [
+			{ "type": "Feature", 
+				"properties": { 'Level': startLev,
+					"targetLevel": endLev,
+					"type": "LevelChange" },
+				"geometry": { "type": "Point", 
+					"coordinates": coords }
+			}
+		]
+	};
+	indoorLayer._layers[startLev].addData(feature);
 }
 
 //get the indoor level 
@@ -283,12 +335,17 @@ function getCurrIndoorLev(){
 
 //thing thing thing
 function setNavPoint(point, start){
-	
 	//TODO: NOT LEAVE THIS HERE, FIX THE DATA TO INCLUDE A THING FOR BULIDING No
 	var buildingNo = 37;
 	if (start) {
 		$("#start")[0].value = "" + buildingNo + point.id;
 	}else{
 		$("#end")[0].value = "" + buildingNo + point.id;
+	}
+
+	var startVal = parseInt($("#start")[0].value);
+	var endVal = parseInt($("#end")[0].value);
+	if( startVal && endVal ) {
+		calcRoute();
 	}
 }
