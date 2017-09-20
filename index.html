@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	
+    <link rel="stylesheet" type="text/css" href="css/tool.css" media="all" />
+	<link rel="stylesheet" type="text/css" href="leaflet/leaflet.css" />
+	
+	<script type="text/javascript" src="js/jquery-3.1.0.min.js"></script>
+	<script type="text/javascript" src="leaflet/leaflet.js"></script>
+	<script type="text/javascript" src="leaflet/leaflet-indoor.js"></script>
+	<script type="text/javascript" src="map.js"></script>
+	<script type="text/javascript" src="nav.js"></script>
+</head>
+
+<body>
+	<div class="center-block" id="map">
+		
+	</div>
+	<div>
+		<form>
+			<!--<label for="start">Start</label>-->
+			<input id="start" type='hidden'/>
+			<!--<label for="end">End</label>-->
+			<input id="end" type='hidden'/> 
+		</form>
+		<!--<input id="DrawRoute" type="button" value="Calc Route" onclick="calcRoute();" /><br>-->
+		<input id="drawAll" type="button" value="Draw All Routes" onclick="drawAllLines();" />
+		<input id="drawAll" type="button" value="Clear All Lines" onclick="clearLines();" /><br>
+		<input id="drawAll" type="button" value="Draw All Markers" onclick="drawAllMarkers();" />
+		<input id="drawAll" type="button" value="Clear All Markers" onclick="clearMarkers();" /><br>
+		<input id="drawAll" type="button" value="Refresh Data" onclick="PopulateGJSONVars();" /><br>
+		<!--<input id="miscFunc" type="button" value="Test Button (DO NOT PRESS!)" onclick="miscFunc();" /><br>-->
+	</div>
+	<script>
+		makeMap(true, null);
+		PopulateGJSONVars();
+	</script>
+</body>
+</html>
